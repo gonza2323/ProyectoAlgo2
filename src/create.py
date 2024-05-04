@@ -1,6 +1,13 @@
 import os
 import glob
 import PyPDF2
+from . import trie
+from unidecode import unidecode
+import re
+import pickle
+
+
+
 
 def create(ruta):
     print("Soy un create")
@@ -9,6 +16,8 @@ def create(ruta):
 
     # Obtener la lista de archivos PDF en el directorio
     archivos_pdf = glob.glob(os.path.join(directorio_pdf, '*.pdf'))
+    
+    T=trie.Trie()
 
     # Recorrer cada archivo PDF
     for archivo_pdf in archivos_pdf:
@@ -36,11 +45,27 @@ def create(ruta):
 
         # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
         texto_plano = ' '.join(texto_paginas)
-        
 
-        # Guarda el texto extraído en un archivo de texto en el mismo directorio que el PDF
-        with open(ruta_txt, 'w', encoding='utf-8') as txt_file:
-            txt_file.write(texto_plano)
+        
+        #Saca las tildes
+        texto_sin_tilde=unidecode(texto_plano)
+
+        #Saca todos los signos de puntuacion
+        texto_sin_tilde=re.sub(r'[^\w\s]', '', texto_sin_tilde)
+
+        #Filtra mayusculas (lower) y se genera una lista de cada palabra (split)
+        listaDePalabras=texto_sin_tilde.lower().split()
+
+        for palabra in listaDePalabras:
+            trie.insert(T,palabra)
+                    
+
 
         print(f'Texto extraído del archivo "{archivo_pdf}" y guardado en "{ruta_txt}"')
+
+    print(trie.getWords(T))
+
+    with open('Trie','bw') as f:
+        pickle.dump(T,f)
+
     print("document data-base created successfully")

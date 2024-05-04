@@ -63,9 +63,7 @@ def create(ruta):
 
         print(f'Texto extraído del archivo "{archivo_pdf}" y guardado en "{ruta_txt}"')
 
-    print(trie.getWords(T))
-
-    with open('Trie','bw') as f:
+    with open('Trie.pkl','bw') as f:
         pickle.dump(T,f)
 
     print("document data-base created successfully")

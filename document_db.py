@@ -7,7 +7,9 @@ if len(sys.argv) < 3:
 
 if sys.argv[1] == "-create":
     create.create(sys.argv[2])
+
 elif sys.argv[1] == "-search":
-    search.search()
+    search.search(sys.argv[2])
+    
 else:
     print("No es un comando")

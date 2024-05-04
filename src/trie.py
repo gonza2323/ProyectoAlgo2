@@ -9,7 +9,7 @@ class TrieNode:
     key = None
     isEndOfWord = False
 
-ALPHABET_SIZE = 26
+ALPHABET_SIZE = 200
 
 # --- Ejercicio 1a
 def insert(T, element):
@@ -23,7 +23,7 @@ def insert(T, element):
     node = T.root
     element = element.lower()
     for i, char in enumerate(element):
-        indexChild = ord(char) - ord('a')
+        indexChild = ord(char) - ord('0')
         nextNode = node.children[indexChild]
         if not nextNode:
             node.children[indexChild] = TrieNode()
@@ -51,7 +51,7 @@ def _findLastNodeOfWord(T, element):
     node = T.root
     element = element.lower()
     for i, char in enumerate(element):
-        node = node.children[ord(char) - ord('a')]
+        node = node.children[ord(char) - ord('0')]
         if (not node or
             node.key != char or
             (i == len(element) - 1 and not node.isEndOfWord)):

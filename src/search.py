@@ -4,20 +4,18 @@ from . import trie
 
 
 def search(texto):
-    print("Soy search")
 
-    with open('Trie.pkl','br') as f:
-        T=pickle.load(f)
+    with open('database.pkl','br') as file:
+        T = pickle.load(file)
 
-    #Saca todos los signos de puntuacion
-    texto=re.sub(r'[^\w\s]', '', texto)
+    # Saca todos los signos de puntuación
+    texto = re.sub(r'[^\w\s]', '', texto)
 
-    #Filtra mayusculas (lower) y se genera una lista de cada palabra (split)
-    textoDePalabras=texto.lower().split()
-    print(texto)
-    print()
-    print(textoDePalabras)
-
+    # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
+    textoDePalabras = texto.lower().split()
+    
     print(len(trie.getWords(T)))
     for palabra in textoDePalabras:
-        print(trie.search(T,palabra))
+        print(trie.getWordCountPerDocument(T, palabra))
+    
+    # TODO Debe imprimir "document not found" si no hay resultados

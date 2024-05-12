@@ -1,9 +1,14 @@
 
+# Visual Studio Code
+.vscode/
+
+# Pickle files
+*.pkl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-*.pkl
 
 # C extensions
 *.so

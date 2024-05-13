@@ -8,6 +8,21 @@ import pickle
 
 
 def create(directorio_pdf: str):
+
+    # Esta función debería:
+
+    # TODO Crear base de datos
+    
+    # Cargar los documentos del directorio
+    
+    # TODO Para cada documento database.add_file(document).
+    # document debería ser la dirección del archivo a cargar y que la clase
+    # database se encargue de limpiarlo y añadirlo
+    
+    # TODO Si salió bien, guardar la base de datos al disco database.save()
+
+    # TODO Imprimir si fue exitoso
+
     # Obtener la lista de archivos PDF en el directorio
     archivos_pdf = glob.glob(os.path.join(directorio_pdf, '*.pdf'))
     
@@ -51,7 +66,7 @@ def create(directorio_pdf: str):
         listaDePalabras=texto_sin_tilde.lower().split()
 
         for palabra in listaDePalabras:
-            insert(T,palabra)
+            insert(T, palabra, nombre_archivo)
                     
         print(f'Texto extraído del archivo "{archivo_pdf}" y guardado en "{ruta_txt}"')
 

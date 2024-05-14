@@ -1,6 +1,7 @@
 import pickle
 import re
 from . import trie
+from filter_words import *
 
 
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
@@ -28,12 +29,10 @@ def search(texto):
     with open('database.pkl','br') as file:
         T = pickle.load(file)
 
-    # Saca todos los signos de puntuación
-    texto = re.sub(r'[^\w\s]', '', texto)
 
-    # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
-    textoDePalabras = texto.lower().split()
-    
+    texto_de_palabras = filter_words(file)
+    diccionario = frecuencia_palabras(texto_de_palabras)
+        
     print(len(trie.getWords(T)))
-    for palabra in textoDePalabras:
+    for palabra in texto_de_palabras:
         print(trie.getWordCountPerDocument(T, palabra))

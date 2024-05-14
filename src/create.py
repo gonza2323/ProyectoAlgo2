@@ -54,7 +54,7 @@ def create(directorio_pdf: str):
 
         # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
         texto_plano = ' '.join(texto_paginas)
-
+        
         
         # Saca las tildes
         texto_sin_tilde=unidecode(texto_plano)

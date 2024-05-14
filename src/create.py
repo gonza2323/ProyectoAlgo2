@@ -5,6 +5,7 @@ from .trie import *
 from unidecode import unidecode
 import re
 import pickle
+from filter_words import *
 
 
 def create(directorio_pdf: str):
@@ -55,15 +56,8 @@ def create(directorio_pdf: str):
         # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
         texto_plano = ' '.join(texto_paginas)
         
-        
-        # Saca las tildes
-        texto_sin_tilde=unidecode(texto_plano)
-
-        # Saca todos los signos de puntuacion
-        texto_sin_tilde=re.sub(r'[^\w\s]', '', texto_sin_tilde)
-
-        # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
-        listaDePalabras=texto_sin_tilde.lower().split()
+        #filtramos los pdf
+        lista_de_palabras = filter_words(texto_plano)
 
         for palabra in listaDePalabras:
             insert(T, palabra, nombre_archivo)

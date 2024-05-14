@@ -1,7 +1,6 @@
 
 from .trie import Trie
 
-
 class Database:
     trie : Trie = None
     documents : dict[str, int] = None

@@ -1,7 +1,6 @@
 from unidecode import unidecode
 import re
 
-
 # Filtra una lista de palabras según el criterio que decidamos
 # Debe retornar también una lista de palabras, con raices
 def filter_words(texto_plano) -> list[str]:

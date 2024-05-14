@@ -5,6 +5,7 @@ from .trie import *
 from unidecode import unidecode
 import re
 import pickle
+from .database import *
 
 
 def create(directorio_pdf: str):
@@ -26,8 +27,13 @@ def create(directorio_pdf: str):
     # Obtener la lista de archivos PDF en el directorio
     archivos_pdf = glob.glob(os.path.join(directorio_pdf, '*.pdf'))
     
-    T = Trie()
+    db=Database()
 
+    db.loop(archivos_pdf)
+
+    #db.save()
+
+"""
     # Recorrer cada archivo PDF
     for archivo_pdf in archivos_pdf:
         # Obtener el nombre del archivo (sin la extensión) para usar como nombre de archivo de texto
@@ -68,9 +74,9 @@ def create(directorio_pdf: str):
         for palabra in listaDePalabras:
             insert(T, palabra, nombre_archivo)
                     
-        print(f'Texto extraído del archivo "{archivo_pdf}" y guardado en "{ruta_txt}"')
 
     with open('database.pkl','bw') as f:
         pickle.dump(T,f)
 
     print("document data-base created successfully")
+"""

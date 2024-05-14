@@ -1,6 +1,7 @@
 import pickle
 import re
 from . import trie
+from .database import *
 
 
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
@@ -26,7 +27,7 @@ def search(texto):
 
 
     with open('database.pkl','br') as file:
-        T = pickle.load(file)
+        db = pickle.load(file)
 
     # Saca todos los signos de puntuación
     texto = re.sub(r'[^\w\s]', '', texto)

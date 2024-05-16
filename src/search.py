@@ -2,6 +2,7 @@ import pickle
 import re
 from . import trie
 from .database import *
+from .filter_words import *
 
 
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
@@ -25,16 +26,19 @@ def search(texto):
 
     # TODO Debe imprimir "document not found" si no hay resultados
 
-
-    with open('database.pkl','br') as file:
-        db = pickle.load(file)
-
-    # Saca todos los signos de puntuación
-    texto = re.sub(r'[^\w\s]', '', texto)
-
-    # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
-    textoDePalabras = texto.lower().split()
     
-    print(len(trie.getWords(T)))
-    for palabra in textoDePalabras:
+    with open('trie.pkl','br') as file:
+        T = pickle.load(file)
+
+    with open('document.pkl','br') as file:
+        documnet = pickle.load(file)
+
+    db=Database()
+    db.trie=T
+    db.documents=documnet
+
+    textoFiltrado=filter_words(texto)
+    
+    print(len(trie.getWords(db.trie)))
+    for palabra in textoFiltrado:
         print(trie.getWordCountPerDocument(T, palabra))

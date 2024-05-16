@@ -23,7 +23,7 @@ def getIndexOfChar(char):
 # Inserta una palabra en el trie, manteniendo registro
 # de cuántas veces aparece en cada documento
 # Devuelve True si fue exitoso
-def insert(t, word, document):
+def insert(t, word, frequency, document):
     if not word or not t or not document:
         return False
     
@@ -54,12 +54,10 @@ def insert(t, word, document):
     # Revisamos si existen documentos con esa palabra
     # y actualizamos o creamos un contador según corresponda
     if node.documents:
-        if document in node.documents:
-            node.documents[document] += 1
-        else:
-            node.documents[document] = 1
+        if document not in node.documents:
+            node.documents[document] = frequency
     else:
-        node.documents = {document : 1}
+        node.documents = {document : frequency}
 
     return True
 

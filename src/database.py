@@ -3,7 +3,6 @@ from .trie import *
 from .filter_words import *
 import os
 import PyPDF2
-import re
 from unidecode import unidecode
 import pickle
 
@@ -14,7 +13,7 @@ class Database:
     # Añade un documento a la base de datos
     # Debe actualizar tanto al Trie como al diccionario de documentos
     # Debería usar filter_words en algún momento
-    # Retorna si fue exitoso o no sdsds
+    # Retorna si fue exitoso o no 
 
     def loop(self,directorios):
         
@@ -41,43 +40,45 @@ class Database:
             # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
             texto_plano = ' '.join(texto_paginas)
 
+            print(texto_plano)
+
             self.add_document(texto_plano,nombre_archivo)
-            print("paso por aca")
+            
 
 
     def add_document(self, document_path : str, nombre_archivo) -> bool:
 
-        # Saca las tildes
-        texto_sin_tilde=unidecode(document_path)
-
-        # Saca todos los signos de puntuacion
-        texto_sin_tilde=re.sub(r'[^\w\s]', '', texto_sin_tilde)
-
-        # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
-        listaDePalabras=texto_sin_tilde.lower().split()
 
         #Termina saca todas las palabras no deseadas
-        listaDePalabraProcesadas=filter_words(listaDePalabras)
+        palabrasProcesadas=filter_words(document_path)
+        print(palabrasProcesadas)
+
+        print(frecuencia_palabras(palabrasProcesadas))
 
         #Obtenemos la cantidad de palabra por texto
-        totalPalabras=len(listaDePalabraProcesadas)
+        totalPalabras=len(palabrasProcesadas)
 
-        for palabra in listaDePalabraProcesadas:
-            if len(palabra)>5:
-                insert(self.trie, palabra[0:4], nombre_archivo)
-            else:
-                insert(self.trie, palabra, nombre_archivo)
+        for palabra in palabrasProcesadas:
+           frecuenciaDePalabra=frecuencia_palabra(palabra,palabrasProcesadas)
+           insert(self.trie, palabra, frecuenciaDePalabra, nombre_archivo)
 
         self.documents[nombre_archivo]=totalPalabras
 
-        with open('database.pkl','bw') as f:
-            pickle.dump(self,f)
+        print(f"Se guardo el {nombre_archivo} en la base de dato")
+
+        
 
     # Guarda la base de datos en disco
     def save(self):
-        
-        with open('database.pkl','bw') as f:
-            pickle.dump(self,f)
-            
 
-        print("Se guardo")
+        T=self.trie
+        document=self.documents
+        
+        with open('trie.pkl','bw') as f:
+            pickle.dump(T,f)
+        
+        with open('document.pkl','bw') as f:
+            pickle.dump(document,f)
+
+        print("document data-base created successfully")
+

@@ -17,7 +17,11 @@ class TrieNode:
 # Devuelve el índice de un caracter alfanúmerico
 # en el array de hijos de un TrieNode
 def getIndexOfChar(char):
-    return ord(char) - ord('a') if ord(char) > 64 else ord(char) - ord('0')
+    if ord(char)==241:
+        return 26
+    else:
+        return ord(char) - ord('a') if ord(char) > 64 else (ord(char) - ord('0')) + 27 #Sumar 27 para los numeros
+    
 
 
 # Inserta una palabra en el trie, manteniendo registro

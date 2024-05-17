@@ -29,11 +29,9 @@ def filter_words(texto_plano) -> list[str]:
     return listaDePalabras
 
 def frecuencia_palabras(listaDePalabras) -> dict:
-    print(listaDePalabras)
     diccionario = {}
     for palabra in listaDePalabras:
         diccionario[palabra] = round(listaDePalabras.count(palabra)/len(listaDePalabras), 4)
-    print(f"diccionario: {diccionario}")
     return diccionario
 
 def frecuencia_palabra(palabra,listaDePalabras) -> dict:

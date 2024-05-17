@@ -40,7 +40,6 @@ class Database:
             # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
             texto_plano = ' '.join(texto_paginas)
 
-            print(texto_plano)
 
             self.add_document(texto_plano,nombre_archivo)
             
@@ -51,7 +50,7 @@ class Database:
 
         #Termina saca todas las palabras no deseadas
         palabrasProcesadas=filter_words(document_path)
-        print(palabrasProcesadas)
+
 
         print(frecuencia_palabras(palabrasProcesadas))
 

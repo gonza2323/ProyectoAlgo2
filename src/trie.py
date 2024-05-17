@@ -17,13 +17,17 @@ class TrieNode:
 # Devuelve el índice de un caracter alfanúmerico
 # en el array de hijos de un TrieNode
 def getIndexOfChar(char):
-    return ord(char) - ord('a') if ord(char) > 64 else ord(char) - ord('0')
+    if ord(char)==241:
+        return 26
+    else:
+        return ord(char) - ord('a') if ord(char) > 64 else (ord(char) - ord('0')) + 27 #Sumar 27 para los numeros
+    
 
 
 # Inserta una palabra en el trie, manteniendo registro
 # de cuántas veces aparece en cada documento
 # Devuelve True si fue exitoso
-def insert(t, word, document):
+def insert(t, word, frequency, document):
     if not word or not t or not document:
         return False
     
@@ -54,12 +58,10 @@ def insert(t, word, document):
     # Revisamos si existen documentos con esa palabra
     # y actualizamos o creamos un contador según corresponda
     if node.documents:
-        if document in node.documents:
-            node.documents[document] += 1
-        else:
-            node.documents[document] = 1
+        if document not in node.documents:
+            node.documents[document] = frequency
     else:
-        node.documents = {document : 1}
+        node.documents = {document : frequency}
 
     return True
 

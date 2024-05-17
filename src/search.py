@@ -1,7 +1,8 @@
 import pickle
 import re
 from . import trie
-from filter_words import *
+from .database import *
+from .filter_words import *
 
 
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
@@ -24,15 +25,19 @@ def search(texto):
     # TODO Imprimir los documentos en orden de relevancia
 
     # TODO Debe imprimir "document not found" si no hay resultados
-
-
-    with open('database.pkl','br') as file:
+    
+    with open('trie.pkl','br') as file:
         T = pickle.load(file)
 
+    with open('document.pkl','br') as file:
+        documents = pickle.load(file)
 
-    texto_de_palabras = filter_words(file)
-    diccionario = frecuencia_palabras(texto_de_palabras)
-        
-    print(len(trie.getWords(T)))
-    for palabra in texto_de_palabras:
+    db=Database()
+    db.trie = T
+    db.documents = documents
+
+    textoFiltrado=filter_words(texto)
+    
+    print(len(trie.getWords(db.trie)))
+    for palabra in textoFiltrado:
         print(trie.getWordCountPerDocument(T, palabra))

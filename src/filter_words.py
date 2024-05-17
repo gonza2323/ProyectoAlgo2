@@ -1,6 +1,7 @@
 from unidecode import unidecode
 import re
 
+
 # Filtra una lista de palabras según el criterio que decidamos
 # Debe retornar también una lista de palabras, con raices
 def filter_words(texto_plano) -> list[str]:
@@ -10,7 +11,6 @@ def filter_words(texto_plano) -> list[str]:
     texto_sin_tilde=re.sub(r'[^\w\s]', '', texto_sin_tilde)
     # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
     listaDePalabras=texto_sin_tilde.lower().split()
-    print(listaDePalabras)
 
     #L: lista de palabras vacias
     stop_words = ['el', 'la', 'lo', 'los', 'las', 'un', "una", "unos", "uno", "unas", "a", "ante", "cabe", "con", 
@@ -24,13 +24,18 @@ def filter_words(texto_plano) -> list[str]:
 
     listaDePalabras = [palabra for palabra in listaDePalabras if palabra not in stop_words]
     listaDePalabras = [palabra[0:5] if len(palabra) > 5 else palabra for palabra in listaDePalabras]
-    print(listaDePalabras)
+    
     return listaDePalabras
 
 def frecuencia_palabras(listaDePalabras) -> dict:
-    
     diccionario = {}
     for palabra in listaDePalabras:
         diccionario[palabra] = round(listaDePalabras.count(palabra)/len(listaDePalabras), 4)
-    print(f"diccionario: {diccionario}")
     return diccionario
+
+def frecuencia_palabra(palabra,listaDePalabras) -> dict:
+    
+    frecuencia=round(listaDePalabras.count(palabra)/len(listaDePalabras), 4)
+    
+    return frecuencia
+

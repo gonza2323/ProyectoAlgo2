@@ -3,15 +3,17 @@ ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
 
 
 class Trie:
-    root = None
+    def __init__(self):
+        self.root = TrieNode()
 
 
 class TrieNode:
-    parent = None
-    children = None
-    key = None
-    is_end_of_word = False
-    documents = None
+    def __init__(self):
+        self.parent : TrieNode = None
+        self.children : list[TrieNode] = [None for i in range(ALPHABET_SIZE)]
+        self.key = None
+        self.is_end_of_word : bool = False
+        self.documents : dict[str, int] = None
 
 
 # Devuelve el índice de un caracter alfanumérico
@@ -31,11 +33,6 @@ def get_index_of_char(char):
 def insert_word(t, word, frequency, document):
     if not word or not t or not document:
         return False
-    
-    # Si no tiene raíz, la creamos
-    if not t.root:
-        t.root = TrieNode()
-        t.root.children = [None] * ALPHABET_SIZE
 
     # Recorremos el árbol siguiendo la palabra a insertar
     # Si ya no existen sus caracteres, los vamos creando
@@ -43,15 +40,16 @@ def insert_word(t, word, frequency, document):
     word = word.lower()
     for char in word:
         index_of_child = get_index_of_char(char)
-        nextNode = node.children[index_of_child]
-        if not nextNode:
-            node.children[index_of_child] = TrieNode()
-            nextNode = node.children[index_of_child]
+        next_node = node.children[index_of_child]
+        
+        if not next_node:
+            next_node = TrieNode()
+            next_node.key = char
+            next_node.parent = node
+
+            node.children[index_of_child] = next_node
             
-            nextNode.children = [None] * ALPHABET_SIZE
-            nextNode.key = char
-            nextNode.parent = node
-        node = nextNode
+        node = next_node
     
     # Marcamos al último nodo como fin de palabra
     node.is_end_of_word = True

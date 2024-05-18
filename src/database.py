@@ -65,7 +65,6 @@ class Database:
 
     # Guarda la base de datos en disco
     def save(self):
-
         with open('trie.pkl','bw') as f:
             pickle.dump(self.trie, f)
         
@@ -73,4 +72,17 @@ class Database:
             pickle.dump(self.documents, f)
 
         print("document data-base created successfully")
+    
 
+    def load():
+        with open('trie.pkl','br') as file:
+            trie = pickle.load(file)
+
+        with open('documents.pkl','br') as file:
+            documents = pickle.load(file)
+        
+        db = Database()
+        db.trie = trie
+        db.documents = documents
+        
+        return db

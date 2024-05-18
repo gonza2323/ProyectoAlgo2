@@ -26,17 +26,11 @@ def search(texto):
 
     # TODO Debe imprimir "document not found" si no hay resultados
     
-    with open('trie.pkl','br') as file:
-        trie = pickle.load(file)
 
-    with open('documents.pkl','br') as file:
-        documents = pickle.load(file)
 
-    db=Database()
-    db.trie = trie
-    db.documents = documents
+    db = Database.load()
 
-    textoFiltrado=filter_words(texto)
+    textoFiltrado = filter_words(texto)
     
     print(len(trie.getWords(db.trie)))
     for palabra in textoFiltrado:

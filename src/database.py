@@ -10,12 +10,7 @@ class Database:
     trie : Trie = Trie()
     documents : dict[str, int] = {}
     
-    # Añade un documento a la base de datos
-    # Debe actualizar tanto al Trie como al diccionario de documentos
-    # Debería usar filter_words en algún momento
-    # Retorna si fue exitoso o no 
-
-    def loop(self,directorios):
+    def loop(self, directorios):
         
         for archivo_pdf in directorios:
         # Obtener el nombre del archivo (sin la extensión) para usar como nombre de archivo de texto
@@ -47,37 +42,35 @@ class Database:
 
     def add_document(self, document_path : str, nombre_archivo) -> bool:
 
+        print(f"Procesando archivo \"{nombre_archivo}\".")
 
         #Termina saca todas las palabras no deseadas
         palabrasProcesadas=filter_words(document_path)
 
 
-        print(frecuencia_palabras(palabrasProcesadas))
+        # print(frecuencia_palabras(palabrasProcesadas))
 
         #Obtenemos la cantidad de palabra por texto
         totalPalabras=len(palabrasProcesadas)
 
         for palabra in palabrasProcesadas:
-           frecuenciaDePalabra=frecuencia_palabra(palabra,palabrasProcesadas)
-           insert(self.trie, palabra, frecuenciaDePalabra, nombre_archivo)
+        #    frecuenciaDePalabra=frecuencia_palabra(palabra,palabrasProcesadas)
+           insert(self.trie, palabra, 1, nombre_archivo)
 
         self.documents[nombre_archivo]=totalPalabras
 
-        print(f"Se guardo el {nombre_archivo} en la base de dato")
+        print(f"Archivo \"{nombre_archivo}\" guardado en la base de datos.")
 
         
 
     # Guarda la base de datos en disco
     def save(self):
 
-        T=self.trie
-        document=self.documents
-        
         with open('trie.pkl','bw') as f:
-            pickle.dump(T,f)
+            pickle.dump(self.trie, f)
         
-        with open('document.pkl','bw') as f:
-            pickle.dump(document,f)
+        with open('documents.pkl','bw') as f:
+            pickle.dump(self.documents, f)
 
         print("document data-base created successfully")
 

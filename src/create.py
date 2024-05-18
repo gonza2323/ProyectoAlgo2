@@ -11,6 +11,6 @@ def create(directorio_pdf: str):
     
     db = Database()
 
-    db.loop(archivos_pdf)
+    db.add_documents(archivos_pdf)
     
     db.save()

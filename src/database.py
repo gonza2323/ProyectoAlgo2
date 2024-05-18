@@ -10,9 +10,10 @@ class Database:
     trie : Trie = Trie()
     documents : dict[str, int] = {}
     
-    def loop(self, directorios):
+    # Añade los archivos pdf de la carpeta a la base de datos
+    def add_documents(self, documentos):
         
-        for archivo_pdf in directorios:
+        for archivo_pdf in documentos:
         # Obtener el nombre del archivo (sin la extensión) para usar como nombre de archivo de texto
             nombre_archivo = os.path.splitext(os.path.basename(archivo_pdf))[0]
         
@@ -39,25 +40,25 @@ class Database:
             self.add_document(texto_plano,nombre_archivo)
             
 
-
+    # Añade un documento a la base de datos
     def add_document(self, document_path : str, nombre_archivo) -> bool:
 
         print(f"Procesando archivo \"{nombre_archivo}\".")
 
         #Termina saca todas las palabras no deseadas
-        palabrasProcesadas=filter_words(document_path)
+        palabras_procesadas = filter_words(document_path)
 
 
         # print(frecuencia_palabras(palabrasProcesadas))
 
         #Obtenemos la cantidad de palabra por texto
-        totalPalabras=len(palabrasProcesadas)
+        total_palabras = len(palabras_procesadas)
 
-        for palabra in palabrasProcesadas:
+        for palabra in palabras_procesadas:
         #    frecuenciaDePalabra=frecuencia_palabra(palabra,palabrasProcesadas)
-           insert(self.trie, palabra, 1, nombre_archivo)
+           insert_word(self.trie, palabra, 1, nombre_archivo)
 
-        self.documents[nombre_archivo]=totalPalabras
+        self.documents[nombre_archivo] = total_palabras
 
         print(f"Archivo \"{nombre_archivo}\" guardado en la base de datos.")
 
@@ -65,15 +66,16 @@ class Database:
 
     # Guarda la base de datos en disco
     def save(self):
-        with open('trie.pkl','bw') as f:
-            pickle.dump(self.trie, f)
+        with open('trie.pkl','bw') as file:
+            pickle.dump(self.trie, file)
         
-        with open('documents.pkl','bw') as f:
-            pickle.dump(self.documents, f)
+        with open('documents.pkl','bw') as file:
+            pickle.dump(self.documents, file)
 
         print("document data-base created successfully")
     
 
+    # Carga la base de datos desde el disco
     def load():
         with open('trie.pkl','br') as file:
             trie = pickle.load(file)

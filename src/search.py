@@ -6,7 +6,7 @@ from .filter_words import *
 
 
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
-def search(texto):
+def search(texto: str):
 
     # Esta función debería:
 
@@ -27,11 +27,10 @@ def search(texto):
     # TODO Debe imprimir "document not found" si no hay resultados
     
 
-
     db = Database.load()
 
-    textoFiltrado = filter_words(texto)
+    texto_filtrado = filter_words(texto)
     
-    print(len(trie.getWords(db.trie)))
-    for palabra in textoFiltrado:
-        print(trie.getWordCountPerDocument(db.trie, palabra))
+    print(len(trie.get_words(db.trie)))
+    for palabra in texto_filtrado:
+        print(trie.get_word_count_per_document(db.trie, palabra))

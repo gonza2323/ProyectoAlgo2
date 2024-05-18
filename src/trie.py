@@ -10,24 +10,25 @@ class TrieNode:
     parent = None
     children = None
     key = None
-    isEndOfWord = False
+    is_end_of_word = False
     documents = None
 
 
-# Devuelve el índice de un caracter alfanúmerico
+# Devuelve el índice de un caracter alfanumérico
 # en el array de hijos de un TrieNode
-def getIndexOfChar(char):
-    if ord(char)==241:
+def get_index_of_char(char):
+    if char == 'ñ':
         return 26
+    elif ord(char) > 64:
+        return ord(char) - ord('a')
     else:
-        return ord(char) - ord('a') if ord(char) > 64 else (ord(char) - ord('0')) + 27 #Sumar 27 para los numeros
-    
+        return ord(char) - ord('0') + 27
 
 
 # Inserta una palabra en el trie, manteniendo registro
 # de cuántas veces aparece en cada documento
 # Devuelve True si fue exitoso
-def insert(t, word, frequency, document):
+def insert_word(t, word, frequency, document):
     if not word or not t or not document:
         return False
     
@@ -41,11 +42,11 @@ def insert(t, word, frequency, document):
     node = t.root
     word = word.lower()
     for char in word:
-        indexChild = getIndexOfChar(char)
-        nextNode = node.children[indexChild]
+        index_of_child = get_index_of_char(char)
+        nextNode = node.children[index_of_child]
         if not nextNode:
-            node.children[indexChild] = TrieNode()
-            nextNode = node.children[indexChild]
+            node.children[index_of_child] = TrieNode()
+            nextNode = node.children[index_of_child]
             
             nextNode.children = [None] * ALPHABET_SIZE
             nextNode.key = char
@@ -53,7 +54,7 @@ def insert(t, word, frequency, document):
         node = nextNode
     
     # Marcamos al último nodo como fin de palabra
-    node.isEndOfWord = True
+    node.is_end_of_word = True
 
     # Revisamos si existen documentos con esa palabra
     # y actualizamos o creamos un contador según corresponda
@@ -66,18 +67,19 @@ def insert(t, word, frequency, document):
     return True
 
 
-def getWordCountPerDocument(t, word):
+def get_word_count_per_document(t: Trie, word: str):
     if not t or not t.root or not word:
         return None
     
     # Recorremos el trie siguiendo la palabra
-    node = t.root
+    node : TrieNode = t.root
     word = word.lower()
+
     for i, char in enumerate(word):
-        node = node.children[getIndexOfChar(char)]
+        node = node.children[get_index_of_char(char)]
         if (not node or
             node.key != char or
-            (i == len(word) - 1 and not node.isEndOfWord)):
+            (i == len(word) - 1 and not node.is_end_of_word)):
             return None # Si no está la palabra
 
     # Si está la palabra retornamos el diccionario
@@ -87,24 +89,24 @@ def getWordCountPerDocument(t, word):
 
 # Retorna una lista con las palabras
 # presentes en el trie
-def getWords(T):
+def get_words(T : Trie):
     if not T:
         return None
     
-    words = []
+    words : list[str] = []
 
-    def getWordsNode(word, node):
+    def get_words_node(word : str, node : TrieNode):
         if node.key:
             word = word + node.key
         
-        if node.isEndOfWord:
+        if node.is_end_of_word:
             words.append(word)
         
         for child in node.children:
             if child:
-                getWordsNode(word, child)
+                get_words_node(word, child)
     
     if T.root:
-        getWordsNode("", T.root)
+        get_words_node("", T.root)
     
     return words

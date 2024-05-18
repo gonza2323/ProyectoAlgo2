@@ -3,16 +3,16 @@ import re
 
 
 # Filtra una lista de palabras según el criterio que decidamos
-# Debe retornar también una lista de palabras, con raices
+# Debe retornar también una lista de palabras, con raíces
 def filter_words(texto_plano) -> list[str]:
     # Saca las tildes
-    texto_sin_tilde=unidecode(texto_plano)
-    # Saca todos los signos de puntuacion
-    texto_sin_tilde=re.sub(r'[^\w\s]', '', texto_sin_tilde)
+    texto_sin_tilde = unidecode(texto_plano)
+    # Saca todos los signos de puntuación
+    texto_sin_tilde = re.sub(r'[^\w\s]', '', texto_sin_tilde)
     # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
-    listaDePalabras=texto_sin_tilde.lower().split()
+    lista_de_palabras = texto_sin_tilde.lower().split()
 
-    #L: lista de palabras vacias
+    #L: lista de palabras vacías
     stop_words = ['el', 'la', 'lo', 'los', 'las', 'un', "una", "unos", "uno", "unas", "a", "ante", "cabe", "con", 
             "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", 
             "segun", "sin", "si", "ni", "so", "sobre", "tras", "al", "del", "y", "o", "que", "esto", "esta", 
@@ -22,20 +22,20 @@ def filter_words(texto_plano) -> list[str]:
             'nadie', 'otro', 'otra', 'cualquier', 'quienquiera','algunos', 'algunas', 'nada', 'ningunos', 'ningunas', 'nadie', 
             'otros', 'otras', 'cualesquiera']
 
-    listaDePalabras = [palabra for palabra in listaDePalabras if palabra not in stop_words]
-    listaDePalabras = [palabra[0:5] if len(palabra) > 5 else palabra for palabra in listaDePalabras]
+    lista_de_palabras = [palabra for palabra in lista_de_palabras if palabra not in stop_words]
+    lista_de_palabras = [palabra[0:5] if len(palabra) > 5 else palabra for palabra in lista_de_palabras]
     
-    return listaDePalabras
+    return lista_de_palabras
 
-def frecuencia_palabras(listaDePalabras) -> dict:
+def frecuencia_palabras(lista_de_palabras) -> dict:
     diccionario = {}
-    for palabra in listaDePalabras:
-        diccionario[palabra] = round(listaDePalabras.count(palabra)/len(listaDePalabras), 4)
+    for palabra in lista_de_palabras:
+        diccionario[palabra] = round(lista_de_palabras.count(palabra)/len(lista_de_palabras), 4)
     return diccionario
 
-def frecuencia_palabra(palabra,listaDePalabras) -> dict:
+def frecuencia_palabra(palabra, lista_de_palabras) -> dict:
     
-    frecuencia=round(listaDePalabras.count(palabra)/len(listaDePalabras), 4)
+    frecuencia = round(lista_de_palabras.count(palabra)/len(lista_de_palabras), 4)
     
     return frecuencia
 

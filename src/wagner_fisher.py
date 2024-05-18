@@ -1,16 +1,16 @@
 def distancia_wagner_fisher(str_corta,str_larga) -> int:
-    #implementamos el algoritmo de wagner fisher optimizado (reduce el espacio de almacenamiento de O(m*n) a O(min(m,n))
+#implementamos el algoritmo de wagner fisher optimizado (reduce el espacio de almacenamiento de O(m*n) a O(min(m,n))
 #usamos solo dos vetores fila en lugar de una matriz
 #se coloca la palabra mas corta de forma horizontal y la mas larga en vertical 
 
-    #establecemos que la str mas corta sea str1 y la str mas larga str2
+    #ns aseguramos que las palabras se encuentren en sus respectivas variables de acuerdo a la longitud
     if len(str_corta) > len(str_larga):
         str_corta, str_larga = str_larga, str_corta
     
     len_str_corta = len(str_corta)
     len_str_larga = len(str_larga)
             
-    #definimos dos vectores fila, prev y current que seran de tamaño m
+    #definimos dos vectores fila: prev y current, que seran de tamaño len_str_corta
     current = [i for i in range(len_str_corta+1)]
 
     for i in range(1,len_str_larga+1):
@@ -21,15 +21,14 @@ def distancia_wagner_fisher(str_corta,str_larga) -> int:
             add = prev[j] +1 #justo arriba
             delete = current[j-1] + 1 #a la izquierda
             change = prev[j-1] #diagonal hacia arriba
-            if str_corta[j-1] != str_larga[i-1]:
-                change += 1 #si de las palabras los caracteres son iguales no se requiere hacer ninguna operacion (insert, delete, replace)
+            if str_corta[j-1] != str_larga[i-1]: #si los caracteres son iguales no se requiere hacer ninguna operacion (add, delete, change)
+                change += 1 
             current[j] = min(add,delete,change)
         #print(f"current: {current}")
 
     distance = current[len_str_corta]
     return distance
-    #print(round((current[len_str_corta]/len_str_larga),4))
-    #print(round((1 - (current[len_str_corta]/len_str_larga)),3))
+    
 
 def similitud(str1,str2) -> float:
     distancia = distancia_wagner_fisher(str1,str2)

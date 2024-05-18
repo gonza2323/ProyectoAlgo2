@@ -34,3 +34,4 @@ def frecuencia_palabras(listaDePalabras) -> dict:
         diccionario[palabra] = round(listaDePalabras.count(palabra)/len(listaDePalabras), 4)
     print(f"diccionario: {diccionario}")
     return diccionario
+

@@ -59,7 +59,7 @@ def create(directorio_pdf: str):
         #filtramos los pdf
         lista_de_palabras = filter_words(texto_plano)
 
-        for palabra in listaDePalabras:
+        for palabra in lista_de_palabras:
             insert(T, palabra, nombre_archivo)
                     
         print(f'Texto extraído del archivo "{archivo_pdf}" y guardado en "{ruta_txt}"')

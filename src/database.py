@@ -53,15 +53,11 @@ class Database:
         #Termina saca todas las palabras no deseadas
         palabras_procesadas = filter_words(document_path)
 
-
-        # print(frecuencia_palabras(palabrasProcesadas))
-
         #Obtenemos la cantidad de palabra por texto
         total_palabras = len(palabras_procesadas)
 
         for palabra in palabras_procesadas:
-        #    frecuenciaDePalabra=frecuencia_palabra(palabra,palabrasProcesadas)
-           insert_word(self.trie, palabra, 1, nombre_archivo)
+           self.trie.insert_word(palabra, nombre_archivo)
 
         self.documents[nombre_archivo] = total_palabras
 

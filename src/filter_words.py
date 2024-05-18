@@ -1,9 +1,10 @@
 from unidecode import unidecode
 import re
 
+MAX_WORD_LENGTH = 20
 
-# Filtra una lista de palabras según el criterio que decidamos
-# Debe retornar también una lista de palabras, con raíces
+# Filtra un texto según el criterio que decidamos
+# Debe retornar una lista de palabras
 def filter_words(texto_plano) -> list[str]:
     # Saca las tildes
     texto_sin_tilde = unidecode(texto_plano)
@@ -23,9 +24,10 @@ def filter_words(texto_plano) -> list[str]:
             'otros', 'otras', 'cualesquiera']
 
     lista_de_palabras = [palabra for palabra in lista_de_palabras if palabra not in stop_words]
-    lista_de_palabras = [palabra[0:5] if len(palabra) > 5 else palabra for palabra in lista_de_palabras]
+    lista_de_palabras = [palabra[0:MAX_WORD_LENGTH] if len(palabra) > MAX_WORD_LENGTH else palabra for palabra in lista_de_palabras]
     
     return lista_de_palabras
+
 
 def frecuencia_palabras(lista_de_palabras) -> dict:
     diccionario = {}
@@ -33,9 +35,7 @@ def frecuencia_palabras(lista_de_palabras) -> dict:
         diccionario[palabra] = round(lista_de_palabras.count(palabra)/len(lista_de_palabras), 4)
     return diccionario
 
-def frecuencia_palabra(palabra, lista_de_palabras) -> dict:
-    
-    frecuencia = round(lista_de_palabras.count(palabra)/len(lista_de_palabras), 4)
-    
-    return frecuencia
 
+def frecuencia_palabra(palabra, lista_de_palabras) -> dict:
+    frecuencia = round(lista_de_palabras.count(palabra)/len(lista_de_palabras), 4)
+    return frecuencia

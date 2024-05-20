@@ -1,11 +1,15 @@
+from .wagner_fisher import similitud
+from .filter_words import MAX_WORD_LENGTH
 
 ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
 
+MIN_SIMILARITY = 0.7 # TODO Utilizarla para corta ramas del trie
+MAX_SIMILARITY = 0.9 # TODO Utilizarla para agregar todas las palabras de esa rama del trie sin seguir calculando similitud
 
 class TrieNode:
     def __init__(self):
         self.parent : TrieNode = None
-        self.children : list[TrieNode] = [None for i in range(ALPHABET_SIZE)]
+        self.children : dict[str, TrieNode] = {}
         self.key = None
         self.is_end_of_word : bool = False
         self.documents : dict[str, int] = None
@@ -39,16 +43,13 @@ class Trie:
         node = self.root
         word = word.lower()
         for char in word:
-            index_of_child = Trie.get_index_of_char(char)
-            next_node = node.children[index_of_child]
-            
-            if not next_node:
+            if char in node.children:            
+                next_node = node.children[char]
+            else:
                 next_node = TrieNode()
                 next_node.key = char
                 next_node.parent = node
-
-                node.children[index_of_child] = next_node
-                
+                node.children[char] = next_node
             node = next_node
         
         # Marcamos al último nodo como fin de palabra
@@ -108,25 +109,34 @@ class Trie:
         return words
 
 
-    # TODO Encontrar matches basados en la distancia Levenstein
-    # Por solo realiza match exacto.
     def find_matches(self, search_word, on_match_function, vectors):
-        
-        def recursive(node: TrieNode, current_word = '', i = -1):
+
+        matrix = [[i + j for j in range(len(search_word) + 1)] for i in range(MAX_WORD_LENGTH + 1)]
+
+        def find_matches_recursive(matrix, node: TrieNode, current_word = '', i = 0):
             if not node:
                 return
             
-            if i == len(search_word):
-                return
-
             if node.key:
-                if node.key != search_word[i]:
-                    return
-            
-            if node.is_end_of_word and i == len(search_word) - 1:
-                on_match_function(vectors, node, search_word)
-            
-            for child in node.children:
-                recursive(child, i = i + 1)
+                current_word += node.key
 
-        recursive(self.root)
+                for j in range(1, len(search_word) + 1):
+                    insertions = matrix[i-1][j] + 1     # Celda de arriba
+                    deletions = matrix[i][j-1] + 1      # Celda a la izquierda
+                    substitutions = matrix[i-1][j-1]    # Celda en diagonal
+                    if search_word[j-1] != node.key:
+                        substitutions += 1
+                    matrix[i][j] = min(insertions, deletions, substitutions)
+                
+                distance = matrix[i][len(search_word)]
+                max_distance = max(i, len(search_word))
+                similarity = 1 - distance/max_distance
+
+                if node.is_end_of_word and similarity > MIN_SIMILARITY:
+                    # print(search_word, current_word, round(similarity, 3), distance, max_distance)
+                    on_match_function(vectors, node, search_word)
+            
+            for child in node.children.values():
+                find_matches_recursive(matrix, child, current_word, i + 1)
+
+        find_matches_recursive(matrix, self.root)

@@ -12,7 +12,7 @@ def filter_words(texto_plano) -> list[str]:
     texto_sin_tilde = re.sub(r'[^\w\s]', '', texto_sin_tilde)
     # Filtra mayúsculas (lower) y se genera una lista de cada palabra (split)
     lista_de_palabras = texto_sin_tilde.lower().split()
-
+    
     #L: lista de palabras vacías
     stop_words = ['el', 'la', 'lo', 'los', 'las', 'un', "una", "unos", "uno", "unas", "a", "ante", "cabe", "con", 
             "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", 

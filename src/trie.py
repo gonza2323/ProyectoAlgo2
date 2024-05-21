@@ -108,18 +108,21 @@ class Trie:
         
         return words
 
-
     def find_matches(self, search_word, on_match_function, vectors):
+    
+        matrix = [[0] * (len(search_word) + 1) for _ in range(MAX_WORD_LENGTH + 1)]
 
         matrix = [[i + j for j in range(len(search_word) + 1)] for i in range(MAX_WORD_LENGTH + 1)]
 
-        def find_matches_recursive(matrix, node: TrieNode, current_word = '', i = 0):
-            if not node:
+        def tolerancia(len_current_word, len_search_word):
+            return len_current_word / len_search_word
+
+        def find_matches_recursive(matrix, node, current_word='', i=0):
+            if node is None:
                 return
             
             if node.key:
                 current_word += node.key
-
                 for j in range(1, len(search_word) + 1):
                     insertions = matrix[i-1][j] + 1     # Celda de arriba
                     deletions = matrix[i][j-1] + 1      # Celda a la izquierda
@@ -132,11 +135,27 @@ class Trie:
                 max_distance = max(i, len(search_word))
                 similarity = 1 - distance/max_distance
 
-                if node.is_end_of_word and similarity > MIN_SIMILARITY:
-                    # print(search_word, current_word, round(similarity, 3), distance, max_distance)
-                    on_match_function(vectors, node, search_word)
-            
-            for child in node.children.values():
+                
+                # print(f"current: {current_word}")
+                # print(f"search: {search_word}")
+                if similarity >= MIN_SIMILARITY:
+                    if node.is_end_of_word:
+                        print(search_word, current_word, round(similarity, 3), distance, max_distance)
+                        on_match_function(vectors, node, search_word)
+
+                if similarity < MIN_SIMILARITY:
+                    tol = tolerancia(len(current_word), len(search_word))
+                    if similarity < tol: return
+
+            for child in node.children:
                 find_matches_recursive(matrix, child, current_word, i + 1)
 
         find_matches_recursive(matrix, self.root)
+
+    
+
+    
+
+
+
+    

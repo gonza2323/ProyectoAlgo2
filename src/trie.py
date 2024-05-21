@@ -110,12 +110,10 @@ class Trie:
 
     def find_matches(self, search_word, on_match_function, vectors):
     
-        matrix = [[0] * (len(search_word) + 1) for _ in range(MAX_WORD_LENGTH + 1)]
-
         matrix = [[i + j for j in range(len(search_word) + 1)] for i in range(MAX_WORD_LENGTH + 1)]
-
+        
         def tolerancia(len_current_word, len_search_word):
-            return len_current_word / len_search_word
+            return (len_current_word / len_search_word)/2
 
         def find_matches_recursive(matrix, node, current_word='', i=0):
             if node is None:

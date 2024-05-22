@@ -3,6 +3,7 @@ import re
 from . import trie
 from .database import *
 from .filter_words import *
+import math
 
 
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
@@ -89,4 +90,31 @@ def normalize_vectors(vectors, documents):
 
 # TODO Calcula la divergencia de Jensen Shannon para dos vectores
 def jensen_shannon_divergence(p, q):
-    return 0
+    M : dict[str, float] = {}
+    for word in q:
+        if p[word]:
+            M[word]=(p[word]+q[word])/2 #verificar que pasa si la palabra no esta en p
+        else:
+             M[word]=(q[word])/2
+    
+    KL_P_M=0
+    KL_Q_M=0
+
+    for word in M:
+        if p[word] and q[word]:
+            KL_P_M += p[word] * math.log2(p[word]/M[word])  #hay que verificar si la palabra esta en p
+            KL_Q_M += q[word] * math.log2(q[word]/M[word])  #hay que verificar si la palabra esta en q
+        elif p[word]:
+            KL_P_M += p[word] * math.log2(p[word]/M[word])  #hay que verificar si la palabra esta en p
+            KL_Q_M += 0
+        elif q[word]:
+            KL_P_M += 0                                       #hay que verificar si la palabra esta en p
+            KL_Q_M += q[word] * math.log2(q[word]/M[word])
+        else:
+            KL_P_M += 0
+            KL_Q_M += 0
+
+    
+    divergence=(KL_P_M + KL_Q_M)/2
+
+    return divergence

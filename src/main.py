@@ -27,7 +27,6 @@ def main(arguments = argv[1:]):
         else:
             print("Error. Número incorrecto de argumentos. Use '-search <text>'")
             return 1
-
     else:
         print(f"Error. '{comando}' no es un comando válido. Use '-create' o '-search'")
         return 1

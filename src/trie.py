@@ -6,6 +6,7 @@ ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
 MIN_SIMILARITY = 0.7 # TODO Utilizarla para corta ramas del trie
 MAX_SIMILARITY = 0.9 # TODO Utilizarla para agregar todas las palabras de esa rama del trie sin seguir calculando similitud
 
+
 class TrieNode:
     def __init__(self):
         self.parent : TrieNode = None
@@ -108,6 +109,10 @@ class Trie:
         
         return words
 
+
+    # Recorrer el trie buscando palabras que se encuentren dentro de un rango
+    # aceptado de similitud, basado en la distancia Levenshtein. Si ocurre un
+    # match, se llama a la función on_match_function y se le pasa la palabra
     def find_matches(self, search_word, on_match_function, vectors):
     
         matrix = [[i + j for j in range(len(search_word) + 1)] for i in range(MAX_WORD_LENGTH + 1)]
@@ -133,27 +138,19 @@ class Trie:
                 max_distance = max(i, len(search_word))
                 similarity = 1 - distance/max_distance
 
-                
                 # print(f"current: {current_word}")
                 # print(f"search: {search_word}")
                 if similarity >= MIN_SIMILARITY:
                     if node.is_end_of_word:
                         print(search_word, current_word, round(similarity, 3), distance, max_distance)
-                        on_match_function(vectors, node, search_word)
+                        on_match_function(vectors, node, search_word, similarity)
 
                 if similarity < MIN_SIMILARITY:
                     tol = tolerancia(len(current_word), len(search_word))
                     if similarity < tol: return
 
-            for child in node.children:
+            for child in node.children.values():
                 find_matches_recursive(matrix, child, current_word, i + 1)
 
         find_matches_recursive(matrix, self.root)
-
-    
-
-    
-
-
-
     

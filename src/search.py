@@ -70,22 +70,26 @@ def vectorize(texto : str) -> dict[str, float]:
 # y una de las palabras del Trie. Por cada documento en el que aparece la palabra,
 # cargará en su vector, en la componente correspondiente a tal palabra, la cantidad
 # de veces que aparece en él.
-def update_vectors(vectors, word_node: TrieNode, search_word : str):
+def update_vectors(vectors, word_node: TrieNode, search_word : str, similarity):
     for document, count in word_node.documents.items():
         if document in vectors:
             vector = vectors[document]
-            vector[search_word] = count
+            if search_word in vector:
+                vector[search_word] = max(count * similarity, vector[search_word])
+            else:
+                vector[search_word] = count * similarity
         else:
             vectors[document] = {search_word: count}
 
 
-# "Normaliza" el vector de un documento dividiendo por la cantidad
-# de palabras que contiene (no es que deja la norma en 1)
+# Deja la integral de las funciones de distribución de probabilidad en 1
 def normalize_vectors(vectors, documents):
     for document, vector in vectors.items():
-        total_count = documents[document]
+        integral = 0
+        for count in vector.values():
+            integral += count
         for word, count in vector.items():
-            vector[word] = count / total_count
+            vector[word] = count / integral
 
 
 # TODO Calcula la divergencia de Jensen Shannon para dos vectores
@@ -109,8 +113,6 @@ def jensen_shannon_divergence(p, q):
             KL_P_M += 0                                       #hay que verificar si la palabra esta en q
             KL_Q_M += q[word] * math.log2(q[word]/M[word])
         
-
-    
     divergence=(KL_P_M + KL_Q_M)/2
 
     return divergence

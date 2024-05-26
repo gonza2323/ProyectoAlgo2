@@ -36,7 +36,7 @@ def search(texto_busqueda: str):
         resultados.append((document, jensen_shannon_divergence(vector, vector_busqueda)))
     
     # Ordenamos de forma ascendente según la divergencia Jensen Shannon
-    resultados.sort(key = lambda documento: documento[1])
+    resultados.sort(key = lambda documento: documento[1],reverse= True)
 
 
     # Imprimimos los resultados
@@ -116,3 +116,21 @@ def jensen_shannon_divergence(p, q):
     divergence=(KL_P_M + KL_Q_M)/2
 
     return divergence
+
+#jaccard similarity, recibe dos vectores, p es el vector del documento, y q el vector busqueda
+#lo que hace es trabajar con la interseccion y la union de dos conjuntos
+#en la interseccion se ve las palabras que comparten ambos vectores
+#y en la union es las palabras de ambos, pero si estan en los dos no las va a poner dos veces
+
+def jaccard_similarity(p,q):
+    set1 = set(p.keys())
+    set2 = set(q.keys())
+    intersection = len(set1.intersection(set2))
+    union = len(set1.union(set2))
+
+    if union != 0:
+        print("U/I",intersection/union)
+        return intersection/union
+    else:
+        return 0
+

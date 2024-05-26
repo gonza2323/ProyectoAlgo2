@@ -2,7 +2,6 @@ from sys import argv
 from .create import create
 from .search import search
 
-
 def main(arguments = argv[1:]):
     
     # Verificar que se haya especificado un comando
@@ -13,7 +12,6 @@ def main(arguments = argv[1:]):
     comando = arguments[0]
 
     if comando == "-create":
-        # Verificar que haya un solo argumento para '-create'
         if len(arguments) == 2:
             create(arguments[1])
         else:
@@ -33,6 +31,6 @@ def main(arguments = argv[1:]):
 
     return 0
 
-
 if __name__ == "__main__":
     exit(main())
+

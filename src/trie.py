@@ -3,7 +3,7 @@ from .filter_words import MAX_WORD_LENGTH
 
 ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
 
-MIN_SIMILARITY = 0.7 # TODO Utilizarla para corta ramas del trie
+MIN_SIMILARITY = 0.8 # TODO Utilizarla para corta ramas del trie
 MAX_SIMILARITY = 0.9 # TODO Utilizarla para agregar todas las palabras de esa rama del trie sin seguir calculando similitud
 
 

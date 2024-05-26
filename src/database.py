@@ -33,13 +33,14 @@ class Database:
                 texto_paginas = []
 
                 # Itera sobre cada página del PDF
-                for pagina_num in range(len(pdf_reader.pages)):
-                    # Obtiene la página actual
-                    pagina = pdf_reader.pages[pagina_num]
-
-                    # Extrae el texto de la página y agrega cada línea a la lista texto_paginas
-                    texto_paginas.extend(pagina.extract_text().splitlines())
-                
+                for pagina in pdf_reader.pages:
+                    #Extrae el texto de la pagina actual 
+                    text_pagina = pagina.extract_text()
+                    
+                    if text_pagina:
+                        #Dividir el texto en palabras y agrega las palabras a la lista
+                        texto_paginas.extend(text_pagina.split())
+                                    
             # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
             texto_plano = ' '.join(texto_paginas)
 

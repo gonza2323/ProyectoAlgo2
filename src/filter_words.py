@@ -15,7 +15,7 @@ def filter_words(texto_plano) -> list[str]:
     
     #L: lista de palabras vacías
     stop_words = ['el', 'la', 'lo', 'los', 'las', 'un', "una", "unos", "uno", "unas", "a", "ante", "cabe", "con", 
-            "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", 
+            "contra", "de","se", "ha", "han", "le", "les", "su", "sus", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", 
             "segun", "sin", "si", "ni", "so", "sobre", "tras", "al", "del", "y", "o", "que", "esto", "esta", 
             "este", "eso", "ese", "esa", "aquello", "aquel", "aquella", "estos", "estas", "alli", "esos", "esas", 
             "alla", "aquellos", "aquellas",'yo', 'tu', 'el', 'ella', 'usted', 'nosotros', 'nosotras', 'vosotros', 

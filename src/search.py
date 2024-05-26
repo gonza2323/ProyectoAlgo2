@@ -129,7 +129,7 @@ def jaccard_similarity(p,q,len_pdf):
     set1 = set(p.keys())
     set2 = set(q.keys())
     intersection = len(set1.intersection(set2))
-    #union = len(set1.union(set2))
+        
     if len(p) < len(q):
         union = len_pdf + (len(q)-len(p))
     else: 

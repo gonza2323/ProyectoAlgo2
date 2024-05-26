@@ -10,7 +10,7 @@ import math
 def search(texto_busqueda: str):
     
     # TODO Verificar que la base de datos se cargó correctamente
-    # TODO Debe imprimir "document not found" si no hay resultados relevantes
+
     
     db : Database = Database.load()
 
@@ -38,6 +38,9 @@ def search(texto_busqueda: str):
     # Ordenamos de forma ascendente según la divergencia Jensen Shannon
     resultados.sort(key = lambda documento: documento[1],reverse= True)
 
+    #Debe imprimir "document not found" si no hay resultados relevantes
+    if not resultados:
+        print("Document not found")
 
     # Imprimimos los resultados
     for resultado in resultados:

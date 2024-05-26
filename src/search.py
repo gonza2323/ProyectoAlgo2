@@ -33,7 +33,7 @@ def search(texto_busqueda: str):
     resultados : tuple[str, float] = []
 
     for document, vector in vectores.items():
-        resultados.append((document, jensen_shannon_divergence(vector, vector_busqueda)))
+        resultados.append((document, jaccard_similarity(vector, vector_busqueda)))
     
     # Ordenamos de forma ascendente según la divergencia Jensen Shannon
     resultados.sort(key = lambda documento: documento[1],reverse= True)

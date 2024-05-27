@@ -35,7 +35,7 @@ def search(texto_busqueda: str):
     for document, vector in vectores.items():
         resultados.append((document, jaccard_similarity(vector, vector_busqueda, db.documents[document])))
     
-    # Ordenamos de forma ascendente según la divergencia Jensen Shannon
+    # Ordenamos de forma ascendente según jaccard similarity
     resultados.sort(key = lambda documento: documento[1],reverse= True)
 
     #Debe imprimir "document not found" si no hay resultados relevantes
@@ -145,7 +145,8 @@ def jaccard_similarity(p,q,len_pdf):
             union += max(p[word],q[word])
         else:
             union += q[word]
-    return interseccion/union
+    factor_longitud = max(len_pdf,len(q))/min(len_pdf,len(q))
+    return (interseccion/union) * factor_longitud
 
     # set1 = set(p.keys())
     # set2 = set(q.keys())

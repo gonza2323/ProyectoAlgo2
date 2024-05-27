@@ -142,7 +142,7 @@ class Trie:
                 # print(f"search: {search_word}")
                 if similarity >= MIN_SIMILARITY:
                     if node.is_end_of_word:
-                        print(search_word, current_word, round(similarity, 3), distance, max_distance)
+                        #print(search_word, current_word, round(similarity, 3), distance, max_distance)
                         on_match_function(vectors, node, search_word, similarity)
 
                 if similarity < MIN_SIMILARITY:

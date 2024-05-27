@@ -26,7 +26,7 @@ def search(texto_busqueda: str):
         db.trie.find_matches(palabra, update_vectors, vectores)
     
     normalize_vectors(vectores, db.documents)
-    
+       
     
     # Para cada vector de un documento, calculamos su divergencia Jensen Shanon
     # con respecto al vector del texto de búsqueda y guardamos los resultados
@@ -74,25 +74,33 @@ def vectorize(texto : str) -> dict[str, float]:
 # cargará en su vector, en la componente correspondiente a tal palabra, la cantidad
 # de veces que aparece en él.
 def update_vectors(vectors, word_node: TrieNode, search_word : str, similarity):
-    for document, count in word_node.documents.items():
+    #Cant de documentos donde la aparece la palabra
+    cant_docs_presente = len(word_node.documents)
+    for document, count in word_node.documents.items(): #{document:veces_que_repite}
         if document in vectors:
             vector = vectors[document]
-            if search_word in vector:
-                vector[search_word] = max(count * similarity, vector[search_word])
-            else:
-                vector[search_word] = count * similarity
+            vector[search_word] = (count * similarity,cant_docs_presente)
         else:
-            vectors[document] = {search_word: count}
+            vectors[document] = {search_word: (count * similarity,cant_docs_presente)}
+    
 
 
 # Deja la integral de las funciones de distribución de probabilidad en 1
+#vectores = {documento,{palabra,cuenta}}
+#db_documents = {docuemnt,total_palabras}
+#len(db_documents) = numero de documentos
+#TF = numero de veces que aparece/total_palabras lo obtengo despues de que normalizo
+#IDF = numero total de documentos/ numero de documentos que contienen el termino
 def normalize_vectors(vectors, documents):
+    total_docs = len(documents)
     for document, vector in vectors.items():
-        integral = 0
-        for count in vector.values():
-            integral += count
-        for word, count in vector.items():
-            vector[word] = count / integral
+        total_count = documents[document]
+        for word, (count, cant_docs_presente) in vector.items():
+            tf = count/total_count
+            idf = math.log2(total_docs/cant_docs_presente)
+            vector[word] = tf*idf
+
+    
 
 
 # TODO Calcula la divergencia de Jensen Shannon para dos vectores
@@ -126,18 +134,34 @@ def jensen_shannon_divergence(p, q):
 #y en la union es las palabras de ambos, pero si estan en los dos no las va a poner dos veces
 
 def jaccard_similarity(p,q,len_pdf):
-    set1 = set(p.keys())
-    set2 = set(q.keys())
-    intersection = len(set1.intersection(set2))
-        
-    if len(p) < len(q):
-        union = len_pdf + (len(q)-len(p))
-    else: 
-        union = len_pdf - len(q)
+    #jaccard similarity con peso 
+    #interseccion= pesomin(palabra_vector_p, palabra_vector_q)
+    #union = pesomax(palabras_vetor_p, palabra_vector_q)
+    interseccion = 0
+    union = 0
+    for word in q:
+        if p.get(word):
+            interseccion += min(p[word], q[word])
+            union += max(p[word],q[word])
+        else:
+            union += q[word]
+    return interseccion/union
 
-    if union != 0:
-        #print("U/I",intersection/union)
-        return intersection/union
-    else:
-        return 0
+    # set1 = set(p.keys())
+    # set2 = set(q.keys())
+    # intersection = len(set1.intersection(set2))
+    # print(p)
+    # print(q)
+    # if len(p) < len(q):
+    #     union = len_pdf + (len(q)-len(p))
+    # else: 
+    #     union = len_pdf - len(q)
+
+    # if union != 0:
+    #     #print("U/I",intersection/union)
+    #     return intersection/union
+    # else:
+    #     return 0
+
+    
 

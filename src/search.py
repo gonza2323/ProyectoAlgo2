@@ -5,7 +5,7 @@ from .database import *
 from .filter_words import *
 import math
 
-
+"""
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
 def search(texto_busqueda: str):
     
@@ -46,7 +46,7 @@ def search(texto_busqueda: str):
     for resultado in resultados:
         print(resultado)
     
-
+"""
 # Crea un diccionario donde cada key (palabra) es una componente
 # y su valor (número) es la cantidad de veces que aparece en el texto.
 # Solo se usa para el texto de búsqueda. Para los documentos se utiliza
@@ -164,5 +164,90 @@ def jaccard_similarity(p,q,len_pdf):
     # else:
     #     return 0
 
+
+
+
+
+def search(texto_busqueda: str):
+    
+    # TODO Verificar que la base de datos se cargó correctamente
+
+    
+    db : Database = Database.load()
+
+    texto_filtrado = filter_words(texto_busqueda)
+
+    vector_busqueda = vectorize(texto_filtrado)
+
+    tf : dict[str , dict[str , int]] = {}
+    """
+    for document in db.documents :
+        tf[document]={}
+        for word in texto_filtrado:
+            vector = tf[document]
+            aux
+            vector[word] = 
+    """
+
+    #Se carga todos los nombre de los documentos al diccionario
+    for document in db.documents:
+        tf[document]={}
+
+    #Se buscan las palabras del texto dado
+    for word in texto_filtrado:
+        diccionario=db.trie.get_word_count_per_document(word)
+        #Se cargan todas las apariciones de la pabra en el segundo diccionario
+        #agregar restriciones en caso de que la palabra no exista, si es una sola -----------------------------------
+        for document, count in diccionario.items():
+            if tf.get(document) is not None:
+                vector=tf[document]
+                vector[word]=count
+            else:
+                vector=tf[document]
+                vector[word]=0
     
 
+    idf : dict[str , float] = {}
+    D=len(db.documents)
+
+    for word in texto_filtrado:
+        idf[word] = math.log(D/(1+len(db.trie.get_word_count_per_document(word))),10)
+
+    tf_idf : dict[str , dict[str , int]] = tf
+
+    for word in texto_filtrado:
+        diccionario=db.trie.get_word_count_per_document(word)
+        for document in diccionario:
+            if tf_idf.get(document) is not None:
+                vector=tf_idf[document]
+                vector[word] *= idf[word]
+    
+    for word in texto_filtrado:
+        cantidiad = texto_filtrado.count(word)
+        vector_busqueda[word] = cantidiad
+        vector_busqueda[word] *= idf[word]
+    
+
+    resultados : dict[str , int] = {}
+    mod=modulo_vectorial(vector_busqueda)
+
+    for document, diccionario in tf_idf.items():
+        resultados[document] = productoPunto(diccionario, vector_busqueda) / (modulo_vectorial(diccionario) * mod) if (modulo_vectorial(diccionario) * mod) != 0 else productoPunto(diccionario, vector_busqueda)  
+
+    for document, value in resultados.items():
+        print(document+" : "+str(value))
+
+
+
+def productoPunto(p, q):
+    resultado=0
+    for word in q:
+        if p.get(word) and q.get(word):
+            resultado += p[word] * q[word]
+        else:
+            resultado += 0
+    return resultado
+
+
+def modulo_vectorial(vector):
+    return math.sqrt(sum(x**2 for x in vector.values()))

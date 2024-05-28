@@ -78,7 +78,7 @@ class Trie:
         word = word.lower()
 
         for i, char in enumerate(word):
-            node = node.children[Trie.get_index_of_char(char)]
+            node = node.children[char]
             if (not node or
                 node.key != char or
                 (i == len(word) - 1 and not node.is_end_of_word)):

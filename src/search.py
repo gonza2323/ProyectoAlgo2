@@ -145,8 +145,17 @@ def jaccard_similarity(p,q,len_pdf):
             union += max(p[word],q[word])
         else:
             union += q[word]
-    factor_longitud = max(len_pdf,len(q))/min(len_pdf,len(q))
-    return (interseccion/union) * factor_longitud
+    #Queremos ajustar la similitud teniendo en cuenta la longitud del texto de busqueda
+    #usamos la funcion logaritmica para que este ajuste se haga de forma gradual a medida que aumenta la longitud del texto de busqueda
+    #antes para el factor longitud no usabamos el logaritmo y para los casos en los que el texto de busqueda era muy corto el resultado no era muy preciso
+    #al implementar la funcion logaritmica se suaviza el efecto de la diferencia de longitud
+    factor_longitud = max(len_pdf,len(q))/min(len_pdf,len(q)) 
+    #va a ser un numero mayor a 1 por lo que nunca vamos a tener log(0)
+    return (interseccion/union) * math.log(factor_longitud)
+
+
+
+
 
     # set1 = set(p.keys())
     # set2 = set(q.keys())
@@ -163,6 +172,4 @@ def jaccard_similarity(p,q,len_pdf):
     #     return intersection/union
     # else:
     #     return 0
-
-    
 

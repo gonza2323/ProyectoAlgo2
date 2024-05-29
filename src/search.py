@@ -180,6 +180,7 @@ def search(texto_busqueda: str):
     vector_busqueda = vectorize(texto_filtrado)
 
     tf : dict[str , dict[str , int]] = {}
+    tf1 : dict[str , dict[str , int]] = {}
     """
     for document in db.documents :
         tf[document]={}
@@ -188,54 +189,102 @@ def search(texto_busqueda: str):
             aux
             vector[word] = 
     """
+    documentos=db.documents
 
     #Se carga todos los nombre de los documentos al diccionario
     for document in db.documents:
         tf[document]={}
 
-    #Se buscan las palabras del texto dado
+    #Se buscan las palabras del texto dado(palabras textuales)
     for word in texto_filtrado:
         diccionario=db.trie.get_word_count_per_document(word)
         #Se cargan todas las apariciones de la pabra en el segundo diccionario
-        #agregar restriciones en caso de que la palabra no exista, si es una sola -----------------------------------
-        for document, count in diccionario.items():
-            if tf.get(document) is not None:
-                vector=tf[document]
-                vector[word]=count
-            else:
-                vector=tf[document]
-                vector[word]=0
-    
-
-    idf : dict[str , float] = {}
-    D=len(db.documents)
+        #Se normaliza
+        if diccionario is not None:
+            for document, count in diccionario.items():
+                if tf.get(document) is not None:
+                    vector=tf[document]
+                    vector[word]=count/documentos[document]
+                else:
+                    vector=tf[document]
+                    vector[word]=0
 
     for word in texto_filtrado:
+        db.trie.find_matches(word, update_vectors, tf1)
+
+    idf : dict[str , float] = {}
+    idf1 : dict[str , float] = {}
+    D=len(db.documents)
+    """
+    for word in texto_filtrado:
         idf[word] = math.log(D/(1+len(db.trie.get_word_count_per_document(word))),10)
+    """
+
+    for word in texto_filtrado:
+        idf1[word] = math.log(D/(1+cantidad(word,tf1)),10)
 
     tf_idf : dict[str , dict[str , int]] = tf
-
+    tf_idf1 : dict[str , dict[str , int]] = tf1
+    """
     for word in texto_filtrado:
         diccionario=db.trie.get_word_count_per_document(word)
         for document in diccionario:
             if tf_idf.get(document) is not None:
                 vector=tf_idf[document]
                 vector[word] *= idf[word]
-    
+    """
+    for word in texto_filtrado:
+        for document, diccionario in tf_idf1.items():
+            if word in diccionario:
+                vector=diccionario[word]
+                lista = list(vector)    #hay que realizar el cambio de tupla a lista porque 
+                lista[0] *= idf1[word]  #no se puede cambiar los valores de una tupla
+                vector = tuple(lista)
+                diccionario[word] = vector
+
+    """
     for word in texto_filtrado:
         cantidiad = texto_filtrado.count(word)
         vector_busqueda[word] = cantidiad
         vector_busqueda[word] *= idf[word]
+    """
+    for word in texto_filtrado:
+        cantidiad = texto_filtrado.count(word)
+        vector_busqueda[word] = cantidiad
+        vector_busqueda[word] *= idf1[word]
     
 
-    resultados : dict[str , int] = {}
+    diccionarioDeresultados : dict[str , int] = {}
     mod=modulo_vectorial(vector_busqueda)
-
+    """
     for document, diccionario in tf_idf.items():
-        resultados[document] = productoPunto(diccionario, vector_busqueda) / (modulo_vectorial(diccionario) * mod) if (modulo_vectorial(diccionario) * mod) != 0 else productoPunto(diccionario, vector_busqueda)  
+        if (modulo_vectorial(diccionario) * mod) != 0 :
+            diccionarioDeresultados[document] = productoPunto(diccionario, vector_busqueda) / (modulo_vectorial(diccionario) * mod)
+        else:
+            diccionarioDeresultados[document] = productoPunto(diccionario, vector_busqueda)   
+    """
+    for document, diccionario in tf_idf1.items():
+        if (modulo_vectorial1(diccionario) * mod) != 0 :
+            diccionarioDeresultados[document] = productoPunto1(diccionario, vector_busqueda) / (modulo_vectorial1(diccionario) * mod)
+        else:
+            diccionarioDeresultados[document] = productoPunto1(diccionario, vector_busqueda) 
 
-    for document, value in resultados.items():
-        print(document+" : "+str(value))
+
+    resultados : tuple[str, float] = []
+
+    for document, value in diccionarioDeresultados.items():
+        resultados.append((document,value))
+    
+    # Ordenamos de forma ascendente según jaccard similarity
+    resultados.sort(key = lambda documento: documento[1],reverse= True)
+
+    #Debe imprimir "document not found" si no hay resultados relevantes
+    if not resultados:
+        print("Document not found")
+
+    # Imprimimos los resultados
+    for resultado in resultados:
+        print(resultado)
 
 
 
@@ -248,6 +297,37 @@ def productoPunto(p, q):
             resultado += 0
     return resultado
 
+def productoPunto1(diccionario, q):
+    resultado=0
+    for word in q:
+        if diccionario.get(word) and q.get(word):
+            
+            resultado += diccionario[word] [0] * q[word]
+        else:
+            resultado += 0
+    return resultado
+
 
 def modulo_vectorial(vector):
     return math.sqrt(sum(x**2 for x in vector.values()))
+
+def modulo_vectorial1(diccionario):
+    x=0
+    count=0
+    for value, cant in diccionario.values():
+        x=value
+        count += x**2
+    return math.sqrt(count)
+
+def cantidad(word,tf1):
+    count=0
+    for document, diccionario in tf1.items():
+        if word in diccionario:
+            count += 1
+        """
+        for palabra in diccionario:
+            if word == palabra:
+                count += 1
+                break #si la encuentra una ves es suficiente
+        """
+    return count

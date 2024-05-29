@@ -78,7 +78,7 @@ class Trie:
         word = word.lower()
 
         for i, char in enumerate(word):
-            node = node.children[char]
+            node = node.children[char] if node.children.get(char) is not None else None # Para que en caso de no encontrar siguiente letra no se rompa.
             if (not node or
                 node.key != char or
                 (i == len(word) - 1 and not node.is_end_of_word)):

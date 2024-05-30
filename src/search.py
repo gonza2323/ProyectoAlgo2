@@ -168,7 +168,7 @@ def jaccard_similarity(p,q,len_pdf):
 
 
 
-def search(texto_busqueda: str):
+def search(texto_busqueda: str, num: int):
     
     # TODO Verificar que la base de datos se cargó correctamente
 
@@ -182,6 +182,7 @@ def search(texto_busqueda: str):
     else:
         vector_busqueda = vectorize(texto_filtrado)
 
+<<<<<<< HEAD
         tf : dict[str , dict[str , int]] = {}
         tf1 : dict[str , dict[str , int]] = {}
         """
@@ -246,15 +247,93 @@ def search(texto_busqueda: str):
                     diccionario[word] = vector
 
         """
+=======
+    tf : dict[str , dict[str , int]] = {}
+    tf1 : dict[str , dict[str , int]] = {}
+
+    idf : dict[str , float] = {}
+    idf1 : dict[str , float] = {}
+
+    D=len(db.documents)
+
+    documentos=db.documents
+
+    if num=="1":
+        #Se carga todos los nombre de los documentos al diccionario
+        for document in db.documents:
+            tf[document]={}
+
+        #Se buscan las palabras del texto dado(palabras textuales)
+        for word in texto_filtrado:
+            diccionario=db.trie.get_word_count_per_document(word)
+            #Se cargan todas las apariciones de la pabra en el segundo diccionario
+            #Se normaliza
+            if diccionario is not None:
+                for document, count in diccionario.items():
+                    if tf.get(document) is not None:
+                        vector=tf[document]
+                        vector[word]=count/documentos[document]
+                    else:
+                        vector=tf[document]
+                        vector[word]=0
+
+        for word in texto_filtrado:
+            cant=len(db.trie.get_word_count_per_document(word)) if db.trie.get_word_count_per_document(word) is not None else 0
+            idf[word] = math.log(D/(1+cant),10)
+
+
+        tf_idf : dict[str , dict[str , int]] = tf
+
+        for word in texto_filtrado:
+            diccionario=db.trie.get_word_count_per_document(word)
+            if diccionario is not None:
+                for document in diccionario:
+                    if tf_idf.get(document) is not None:
+                        vector=tf_idf[document]
+                        vector[word] *= idf[word]
+
+>>>>>>> 0b91428aefe26c97aee2682375c4134bdda71731
         for word in texto_filtrado:
             cantidiad = texto_filtrado.count(word)
             vector_busqueda[word] = cantidiad
             vector_busqueda[word] *= idf[word]
+<<<<<<< HEAD
         """
+=======
+        
+        diccionarioDeresultados : dict[str , int] = {}
+        mod=modulo_vectorial(vector_busqueda)
+
+        for document, diccionario in tf_idf.items():
+            if (modulo_vectorial(diccionario) * mod) != 0 :
+                diccionarioDeresultados[document] = productoPunto(diccionario, vector_busqueda) / (modulo_vectorial(diccionario) * mod)
+            else:
+                diccionarioDeresultados[document] = productoPunto(diccionario, vector_busqueda) 
+
+
+    else:
+        for word in texto_filtrado:
+            db.trie.find_matches(word, update_vectors, tf1)
+
+
+        for word in texto_filtrado:
+            idf1[word] = math.log(D/(1+cantidad(word,tf1)),10)
+
+        tf_idf1 : dict[str , dict[str , int]] = tf1
+        for word in texto_filtrado:
+            for document, diccionario in tf_idf1.items():
+                if word in diccionario:
+                    vector=diccionario[word]
+                    lista = list(vector)    #hay que realizar el cambio de tupla a lista porque 
+                    lista[0] *= idf1[word]  #no se puede cambiar los valores de una tupla
+                    vector = tuple(lista)
+                    diccionario[word] = vector
+>>>>>>> 0b91428aefe26c97aee2682375c4134bdda71731
         for word in texto_filtrado:
             cantidiad = texto_filtrado.count(word)
             vector_busqueda[word] = cantidiad
             vector_busqueda[word] *= idf1[word]
+<<<<<<< HEAD
         
 
         diccionarioDeresultados : dict[str , int] = {}
@@ -266,12 +345,20 @@ def search(texto_busqueda: str):
             else:
                 diccionarioDeresultados[document] = productoPunto(diccionario, vector_busqueda)   
         """
+=======
+
+        diccionarioDeresultados : dict[str , int] = {}
+        mod=modulo_vectorial(vector_busqueda)
+
+>>>>>>> 0b91428aefe26c97aee2682375c4134bdda71731
         for document, diccionario in tf_idf1.items():
             if (modulo_vectorial1(diccionario) * mod) != 0 :
                 diccionarioDeresultados[document] = productoPunto1(diccionario, vector_busqueda) / (modulo_vectorial1(diccionario) * mod)
             else:
                 diccionarioDeresultados[document] = productoPunto1(diccionario, vector_busqueda) 
 
+        
+ 
 
         resultados : tuple[str, float] = []
 

@@ -21,7 +21,7 @@ def filter_words(texto_plano) -> list[str]:
             "alla", "aquellos", "aquellas",'yo', 'tu', 'el', 'ella', 'usted', 'nosotros', 'nosotras', 'vosotros', 
             'vosotras', 'ellos', 'ellas', 'ustedes','me', 'te', 'nos', 'os', 'alguno', 'alguna', 'algo', 'ninguno', 'ninguna',
             'nadie', 'otro', 'otra', 'cualquier', 'quienquiera','algunos', 'algunas', 'nada', 'ningunos', 'ningunas', 'nadie', 
-            'otros', 'otras', 'cualesquiera','no','e','a','bien','mal','mucho','poco','menos','todo','nada']
+            'otros', 'otras', 'cualesquiera','no','e','a','bien','mal','mucho','poco','menos','todo','nada','es']
 
     lista_de_palabras = [palabra for palabra in lista_de_palabras if palabra not in stop_words]
     lista_de_palabras = [palabra[0:MAX_WORD_LENGTH] if len(palabra) > MAX_WORD_LENGTH else palabra for palabra in lista_de_palabras]

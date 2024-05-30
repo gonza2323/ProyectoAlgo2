@@ -57,12 +57,13 @@ class Database:
         #Obtenemos la cantidad de palabra por texto
         total_palabras = len(palabras_procesadas)
 
-        for palabra in palabras_procesadas:
-           self.trie.insert_word(palabra, nombre_archivo)
+        #verificar que si el documento quedo vacio, no lo añado a la base de datos
+        if total_palabras > 0: #si es mayor a cero lo guarda en el trie, sino return
+            for palabra in palabras_procesadas:
+                self.trie.insert_word(palabra, nombre_archivo)
 
-        self.documents[nombre_archivo] = total_palabras
-
-        print(f"Archivo \"{nombre_archivo}\" guardado en la base de datos.")
+            self.documents[nombre_archivo] = total_palabras
+            print(f"Archivo \"{nombre_archivo}\" guardado en la base de datos.")
         
 
     # Guarda la base de datos en disco

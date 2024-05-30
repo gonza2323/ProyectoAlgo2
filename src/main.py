@@ -20,8 +20,8 @@ def main(arguments = argv[1:]):
 
     elif comando == "-search":
         # Verificar que haya un solo argumento para '-search'
-        if len(arguments) == 2:
-            search(arguments[1])
+        if len(arguments) == 3:
+            search(arguments[1],arguments[2])
         else:
             print("Error. Número incorrecto de argumentos. Use '-search <text>'")
             return 1

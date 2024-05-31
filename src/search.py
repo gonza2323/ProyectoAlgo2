@@ -168,11 +168,11 @@ def jaccard_similarity(p,q,len_pdf):
 
 
 
-def search(texto_busqueda: str, num: int):
+def search(texto_busqueda: str):
     
     # TODO Verificar que la base de datos se cargó correctamente
 
-    
+    min_palabras = 30
     db : Database = Database.load()
 
     texto_filtrado = filter_words(texto_busqueda)
@@ -190,8 +190,8 @@ def search(texto_busqueda: str, num: int):
         D=len(db.documents)
 
         documentos=db.documents
-
-        if num=="1":
+        #si tiene pocas palabras calculo con jaccard similarity
+        if len(vector_busqueda) < min_palabras:
             #Se carga todos los nombre de los documentos al diccionario
             for document in db.documents:
                 tf[document]={}
@@ -239,7 +239,7 @@ def search(texto_busqueda: str, num: int):
                 else:
                     diccionarioDeresultados[document] = productoPunto(diccionario, vector_busqueda) 
 
-
+        #si tiene muchas palabras calculamos con similitud coseno
         else:
             for word in texto_filtrado:
                 db.trie.find_matches(word, update_vectors, tf1)
@@ -285,9 +285,9 @@ def search(texto_busqueda: str, num: int):
 
         # Imprimimos los resultados
         for resultado in resultados:
-            print(resultado)
+            print(resultado[0]) #solo muestro los documentos, no muestro el campo value
     else:
-        print("texto filtrado queda vacio")
+        print("texto de ingreso queda vacio")
 
 
 

@@ -1,4 +1,3 @@
-from .wagner_fisher import similitud
 from .filter_words import MAX_WORD_LENGTH
 
 ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
@@ -113,7 +112,7 @@ class Trie:
     # Recorrer el trie buscando palabras que se encuentren dentro de un rango
     # aceptado de similitud, basado en la distancia Levenshtein. Si ocurre un
     # match, se llama a la función on_match_function y se le pasa la palabra
-    def find_matches(self, search_word, on_match_function, vectors):
+    def find_matches(self, search_word, on_match_function, vectors, documents):
     
         matrix = [[i + j for j in range(len(search_word) + 1)] for i in range(MAX_WORD_LENGTH + 1)]
         
@@ -143,7 +142,7 @@ class Trie:
                 if similarity >= MIN_SIMILARITY:
                     if node.is_end_of_word:
                         #print(search_word, current_word, round(similarity, 3), distance, max_distance)
-                        on_match_function(vectors, node, search_word, similarity)
+                        on_match_function(vectors, node, search_word, similarity, documents)
 
                 if similarity < MIN_SIMILARITY:
                     tol = tolerancia(len(current_word), len(search_word))

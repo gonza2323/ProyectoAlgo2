@@ -76,5 +76,19 @@ class Database:
 
     # Carga la base de datos desde el disco
     def load():
-        with open(Database.DATABASE_PATH, "br") as file:
-            return pickle.load(file)
+        try: 
+            with open(Database.DATABASE_PATH, "br") as file:
+                return pickle.load(file)
+        except FileNotFoundError:
+        #caso en el que el archivo especificado no se encuentra en el directorio
+        #no existe la base de datos 
+            print("El archivo no fue encontrado")
+        except pickle.UnpicklingError:
+        #ocurrio un error durante el proceso de deserializacion del archivo .pkl
+        #falla la carga de la base de datos 
+            print("Error deserializando el archivo")
+        except Exception as error:
+        #ocurre cualquier otro error que no sea ninguno de los anteriores
+        #por ejemplo: no se tienen permisos para leer el archivo, no hay suficiente memoria para cargar el archivo
+        #muestra los detalles del error 
+            print(f"Ha ocurrido un error inesperado: {error}")

@@ -30,7 +30,7 @@ def search(texto_busqueda: str):
     resultados : tuple[str, float] = []
 
     for document, vector in vectores.items():
-        resultados.append((document, jaccard_similarity(vector, vector_busqueda, db.documents[document])))
+        resultados.append((document, jaccard2(vector, vector_busqueda)))
     
     # Ordenamos de forma ascendente según jaccard similarity
     resultados.sort(key = lambda documento: documento[1], reverse= True)
@@ -51,33 +51,65 @@ def search(texto_busqueda: str):
 # update_vectors(), que es más eficiente.
 def vectorize_search(texto : str) -> dict[str, float]:
     vector : dict[str, float] = {}
-    total_word_count = 0
+    total_word_count = len(texto)
 
     for word in texto:
         vector[word] = vector.get(word, 0) + 1
-        total_word_count += 1
-    
-    return vector
+        
+    for word in vector:
+        vector[word] = vector[word]/total_word_count
+    return vector 
 
+#Calculamos el promedio de las longitudes de los documentos para usarlo en el tf_mejorado
+def average(documents):
+    avg = 0
+    for document in documents:
+        avg += documents[document]
+    avg = avg/len(documents)
+    return avg
+
+#con esta funcion mejoramos el tf para que asigne pesos a las palabras dependiendo de la longitud del documento
+def tf_con_parametros(tf, total_count, k, avg):
+    return tf/(tf+(k*total_count/avg))
 
 # Es llamada cuando se detecta un match entre una de las palabras de búsqueda
 # y una de las palabras del Trie. Por cada documento en el que aparece la palabra,
 # actualiza en su vector, la componente correspondiente a la palabra de búsqueda,
 # haciendo el cálculo de peso con tf-idf y la similitud del match.
 def update_vectors(vectors, word_node: TrieNode, search_word : str, similarity, documents):
+    #documents = {document:cant_de_palabras}
     #Cant de documentos donde la aparece la palabra
     cant_docs_presente = len(word_node.documents)
     total_docs = len(documents)
-    for document, count in word_node.documents.items(): #{document:veces_que_repite}
+    for document, count in word_node.documents.items(): #word_node.documents={document:veces_que_repite_la_palabra}
         total_count = documents[document]
         tf = count/total_count
+        tf_mejorado = tf_con_parametros(tf, total_count, total_docs, average(documents))
         idf = math.log2(total_docs/cant_docs_presente)
         if document in vectors:
             vector = vectors[document]
             vector[search_word] = vector.get(search_word, 0) + tf * idf * similarity
         else:
-            vectors[document] = {search_word: tf * idf * similarity}
+            vectors[document] = {search_word: tf_mejorado * idf * similarity}
 
+def productoPunto(p, q):
+    resultado=0
+    for word in q:
+        if p.get(word) and q.get(word):
+            resultado += p[word] * q[word]
+        
+    return resultado
+
+def sumatoria(vector):
+    sum = 0
+    for word in vector:
+        sum += (vector[word])**2
+    return sum
+
+def jaccard2(p,q):
+    producto_pq = productoPunto(p,q)
+    return producto_pq/((sumatoria(p)+sumatoria(q))-producto_pq)
+    
 
 # jaccard similarity, recibe dos vectores, p es el vector del documento, y q el vector busqueda
 # lo que hace es trabajar con la intersección y la union de dos conjuntos

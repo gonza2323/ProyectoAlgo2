@@ -51,11 +51,13 @@ def search(texto_busqueda: str):
 # update_vectors(), que es más eficiente.
 def vectorize_search(texto : str) -> dict[str, float]:
     vector : dict[str, float] = {}
-    total_word_count = 0
+    total_word_count = len(texto)
 
     for word in texto:
         vector[word] = vector.get(word, 0) + 1
-        total_word_count += 1
+        
+    for word in vector:
+        vector[word] = vector[word]/total_word_count
     
     return vector
 

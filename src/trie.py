@@ -1,8 +1,8 @@
 from .filter_words import MAX_WORD_LENGTH
 
-ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
 
-MIN_SIMILARITY = 0.85
+ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
+MIN_SIMILARITY = 0.8        # Mínima similitud Levenshtein para un match
 
 
 class TrieNode:
@@ -19,17 +19,6 @@ class TrieNode:
 class Trie:
     def __init__(self):
         self.root = TrieNode()
-
-
-    # Devuelve el índice de un caracter alfanumérico
-    # en el array de hijos de un TrieNode
-    def get_index_of_char(char):
-        if char == 'ñ':
-            return 26
-        elif ord(char) > 64:
-            return ord(char) - ord('a')
-        else:
-            return ord(char) - ord('0') + 27
 
 
     # Inserta una palabra en el trie, manteniendo registro
@@ -63,47 +52,6 @@ class Trie:
             node.documents = {document : 1}
 
         return True
-
-
-    def get_word_count_per_document(self, word: str):
-        if not word:
-            return None
-        
-        # Recorremos el trie siguiendo la palabra
-        node : TrieNode = self.root
-        word = word.lower()
-
-        for i, char in enumerate(word):
-            node = node.children[char] if node.children.get(char) is not None else None # Para que en caso de no encontrar siguiente letra no se rompa.
-            if (not node or
-                node.key != char or
-                (i == len(word) - 1 and not node.is_end_of_word)):
-                return None # Si no está la palabra
-
-        # Si está la palabra retornamos el diccionario
-        # de documentos y cantidad de apariciones
-        return node.documents
-
-
-    # Retorna una lista con las palabras
-    # presentes en el trie
-    def get_words(self):        
-        words : list[str] = []
-
-        def get_words_node(word : str, node : TrieNode):
-            if node.key:
-                word = word + node.key
-            
-            if node.is_end_of_word:
-                words.append(word)
-            
-            for child in node.children:
-                if child:
-                    get_words_node(word, child)
-        
-        get_words_node("", self.root)
-        
-        return words
 
 
     # Recorrer el trie buscando palabras que se encuentren dentro de un rango

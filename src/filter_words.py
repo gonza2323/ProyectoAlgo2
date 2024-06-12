@@ -27,15 +27,3 @@ def filter_words(texto_plano) -> list[str]:
     lista_de_palabras = [palabra[0:MAX_WORD_LENGTH] if len(palabra) > MAX_WORD_LENGTH else palabra for palabra in lista_de_palabras]
     
     return lista_de_palabras
-
-
-def frecuencia_palabras(lista_de_palabras) -> dict:
-    diccionario = {}
-    for palabra in lista_de_palabras:
-        diccionario[palabra] = round(lista_de_palabras.count(palabra)/len(lista_de_palabras), 4)
-    return diccionario
-
-
-def frecuencia_palabra(palabra, lista_de_palabras) -> dict:
-    frecuencia = round(lista_de_palabras.count(palabra)/len(lista_de_palabras), 4)
-    return frecuencia

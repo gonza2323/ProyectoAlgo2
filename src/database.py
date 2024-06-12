@@ -24,29 +24,32 @@ class Database:
             nombre_archivo = os.path.splitext(os.path.basename(archivo_pdf))[0]
             print(f"Procesando archivo \"{nombre_archivo}\".")
 
-            # Abre el archivo PDF en modo lectura binaria
-            with open(archivo_pdf, 'rb') as pdf_file:
-                # Crea un objeto PdfReader
-                pdf_reader = PyPDF2.PdfReader(pdf_file)
+            try: #aca intenta abrir el archivo pdf
 
-                # Inicializa una lista para almacenar el texto extraído de cada página
-                texto_paginas = []
+                # Abre el archivo PDF en modo lectura binaria
+                with open(archivo_pdf, 'rb') as pdf_file:
+                    # Crea un objeto PdfReader
+                    pdf_reader = PyPDF2.PdfReader(pdf_file)
 
-                # Itera sobre cada página del PDF
-                for pagina in pdf_reader.pages:
-                    #Extrae el texto de la pagina actual 
-                    text_pagina = pagina.extract_text()
-                    
-                    if text_pagina:
-                        #Dividir el texto en palabras y agrega las palabras a la lista
-                        texto_paginas.extend(text_pagina.split())
-                                    
-            # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
-            texto_plano = ' '.join(texto_paginas)
+                    # Inicializa una lista para almacenar el texto extraído de cada página
+                    texto_paginas = []
 
+                    # Itera sobre cada página del PDF
+                    for pagina in pdf_reader.pages:
+                        #Extrae el texto de la pagina actual 
+                        text_pagina = pagina.extract_text()
+                        
+                        if text_pagina:
+                            #Dividir el texto en palabras y agrega las palabras a la lista
+                            texto_paginas.extend(text_pagina.split())
+                                        
+                # Concatena todas las líneas de texto en una sola cadena sin saltos de línea
+                texto_plano = ' '.join(texto_paginas)
+                self.add_document(texto_plano, nombre_archivo)
 
-            self.add_document(texto_plano, nombre_archivo)
-            
+            except Exception as error:
+                print(f"Ocurrió un error inesperado con el archivo {nombre_archivo}: {error}")
+                
 
     # Añade un documento a la base de datos
     def add_document(self, document_path : str, nombre_archivo) -> bool:

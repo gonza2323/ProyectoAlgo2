@@ -100,12 +100,12 @@ class Trie:
             if node.is_end_of_word:
                 words.append(word)
             
-            for child in node.children:
+            for child in node.children.values():
                 if child:
                     get_words_node(word, child)
         
         get_words_node("", self.root)
-        
+
         return words
 
 

@@ -2,7 +2,7 @@ from .filter_words import MAX_WORD_LENGTH
 
 
 ALPHABET_SIZE = 27 + 10     # 27 letras, 10 dígitos
-MIN_SIMILARITY = 0.8        # Mínima similitud utilizada en Levenshtein
+MIN_SIMILARITY = 0.8        # Mínima similitud Levenshtein para un match
 
 
 class TrieNode:

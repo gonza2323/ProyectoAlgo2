@@ -6,7 +6,11 @@ import math
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
 def search(texto_busqueda: str):
     
-    db : Database = Database.load()
+    try:
+        db : Database = Database.load()
+    except Exception:
+        print("Falló la carga de la base de datos")
+        return
 
     texto_filtrado = filter_words(texto_busqueda)
 
@@ -19,23 +23,23 @@ def search(texto_busqueda: str):
     vectores : dict[str, list[float]] = {}
     
     # Para cada palabra de la búsqueda buscamos matcheos en el trie
-    # utilizando el algoritmo del primer argumento. Si da match,
-    # se ejecuta la función del segundo argumento
+    # Si da match, se ejecuta la función del segundo argumento
+    # que actualiza los vectores de los documentos que vaya encontrando
     for palabra in vector_busqueda:
         db.trie.find_matches(palabra, update_vectors, vectores, db.documents)
     
     
-    # Para cada vector de un documento, calculamos su divergencia Jensen Shanon
+    # Para cada vector de un documento, calculamos su similaridad jaccard
     # con respecto al vector del texto de búsqueda y guardamos los resultados
     resultados : tuple[str, float] = []
 
     for document, vector in vectores.items():
         resultados.append((document, jaccard_similarity(vector, vector_busqueda, db.documents[document])))
     
-    # Ordenamos de forma ascendente según jaccard similarity
+    # Ordenamos de forma ascendente según similitud jaccard
     resultados.sort(key = lambda documento: documento[1], reverse= True)
 
-    #Debe imprimir "document not found" si no hay resultados relevantes
+    # Debe imprimir "document not found" si no hay resultados relevantes
     if not resultados:
         print("Document not found")
         return

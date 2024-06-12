@@ -2,12 +2,13 @@ from sys import argv
 from .create import create
 from .search import search
 
+
 def main(arguments = argv[1:]):
     
     # Verificar que se haya especificado un comando
     if len(arguments) < 1:
         print("Error. Debe especificar un comando. Use '-create' o '-search'.")
-        return 1
+        return
     
     comando = arguments[0]
 
@@ -16,7 +17,7 @@ def main(arguments = argv[1:]):
             create(arguments[1])
         else:
             print("Error. Número incorrecto de argumentos. Use '-create <local_path>'")
-            return 1
+            return
 
     elif comando == "-search":
         # Verificar que haya un solo argumento para '-search'
@@ -24,13 +25,11 @@ def main(arguments = argv[1:]):
             search(arguments[1])
         else:
             print("Error. Número incorrecto de argumentos. Use '-search <text>'")
-            return 1
+            return
     else:
         print(f"Error. '{comando}' no es un comando válido. Use '-create' o '-search'")
-        return 1
+        return
 
-    return 0
 
 if __name__ == "__main__":
-    exit(main())
-
+    main()

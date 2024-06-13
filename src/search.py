@@ -46,7 +46,7 @@ def search(texto_busqueda: str):
 
     # Imprimimos los resultados
     for resultado in resultados:
-        print(resultado)
+        print(resultado[0])
     
 
 # Crea un diccionario donde cada key (palabra) es una componente

@@ -6,20 +6,23 @@ import math
 # Debe realizar la búsqueda del texto e imprimir los documentos relevantes en orden
 def search(texto_busqueda: str):
     
-    try:
-        db : Database = Database.load()
-    except Exception:
+    # Cargar base de datos del disco
+    db : Database = Database.load()
+    if not db:
         print("Falló la carga de la base de datos")
         return
 
-    texto_filtrado = filter_words(texto_busqueda)
+    texto_busqueda_filtrado = filter_words(texto_busqueda)
 
     #si el texto filtrado queda vacio no lo busco
-    if len(texto_filtrado) == 0:
-        print("Texto de ingreso queda vacío")
+    if len(texto_busqueda_filtrado) == 0:
+        print("document not found")
         return
 
-    vector_busqueda = vectorize_search(texto_filtrado)
+    # Vector del texto de búsqueda
+    vector_busqueda = vectorize_search(texto_busqueda_filtrado)
+    
+    # Vectores de los documentos que se vayan encontrando
     vectores : dict[str, list[float]] = {}
     
     # Para cada palabra de la búsqueda buscamos matcheos en el trie
@@ -29,7 +32,7 @@ def search(texto_busqueda: str):
         db.trie.find_matches(palabra, update_vectors, vectores, db.documents)
     
     
-    # Para cada vector de un documento, calculamos su similaridad jaccard
+    # Para cada vector de un documento, calculamos su similitud jaccard
     # con respecto al vector del texto de búsqueda y guardamos los resultados
     resultados : tuple[str, float] = []
 
@@ -41,7 +44,7 @@ def search(texto_busqueda: str):
 
     # Debe imprimir "document not found" si no hay resultados relevantes
     if not resultados:
-        print("Document not found")
+        print("document not found")
         return
 
     # Imprimimos los resultados
@@ -50,9 +53,10 @@ def search(texto_busqueda: str):
     
 
 # Crea un diccionario donde cada key (palabra) es una componente
-# y su valor (número) es la cantidad de veces que aparece en el texto.
+# y su valor (número) es la cantidad de veces que aparece en el texto
+# dividida por la cantidad total de palabras.
 # Solo se usa para el texto de búsqueda. Para los documentos se utiliza
-# update_vectors(), que es más eficiente.
+# update_vectors()
 def vectorize_search(texto : str) -> dict[str, float]:
     vector : dict[str, float] = {}
     total_word_count = len(texto)
@@ -101,6 +105,7 @@ def jaccard_similarity(p,q,len_pdf):
             union += max(p[word],q[word])
         else:
             union += q[word]
+    
     #Queremos ajustar la similitud teniendo en cuenta la longitud del texto de busqueda
     #usamos la funcion logaritmica para que este ajuste se haga de forma gradual a medida que aumenta la longitud del texto de busqueda
     #antes para el factor longitud no usabamos el logaritmo y para los casos en los que el texto de busqueda era muy corto el resultado no era muy preciso

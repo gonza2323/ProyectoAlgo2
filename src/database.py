@@ -22,7 +22,6 @@ class Database:
             
             # Obtener el nombre del archivo (sin la extensión) para usar como nombre de archivo de texto
             nombre_archivo = os.path.splitext(os.path.basename(archivo_pdf))[0]
-            print(f"Procesando archivo \"{nombre_archivo}\".")
 
             try:
                 with open(archivo_pdf, 'rb') as pdf_file:
@@ -33,8 +32,6 @@ class Database:
                         texto_pagina = pagina.extract_text()
                         self.add_page(texto_pagina, nombre_archivo)
                     
-                    print(f"Archivo \"{nombre_archivo}\" guardado en la base de datos.")
-
             except Exception as error:
                 print(f"Ocurrió un error inesperado con el archivo {nombre_archivo}: {error}")
                 
@@ -42,10 +39,10 @@ class Database:
     # Añade un documento a la base de datos
     def add_page(self, document_path : str, nombre_archivo) -> bool:
 
-        #Termina saca todas las palabras no deseadas
+        # Saca todas las palabras no deseadas
         palabras_procesadas = filter_words(document_path)
 
-        #Obtenemos la cantidad de palabra en la página
+        # Obtenemos la cantidad de palabras en la página
         total_palabras = len(palabras_procesadas)
 
         for palabra in palabras_procesadas:
@@ -70,10 +67,8 @@ class Database:
                 return pickle.load(file)
         except FileNotFoundError:
             print(f"No se encontró la base de datos en \"{Database.DATABASE_PATH}\"")
-            raise
         except pickle.UnpicklingError:
             print(f"Error deserializando la base de datos \"{Database.DATABASE_PATH}\"")
-            raise
         except Exception as error:
             print(f"Ocurrió un error inesperado: {error}")
-            raise
+        return None

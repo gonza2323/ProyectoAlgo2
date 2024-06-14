@@ -25,6 +25,7 @@ def filter_words(texto_plano) -> list[str]:
             'nadie', 'otro', 'otra', 'cualquier', 'quienquiera','algunos', 'algunas', 'nada', 'ningunos', 'ningunas', 'nadie', 
             'otros', 'otras', 'cualesquiera','no','e','a','bien','mal','mucho','poco','menos','todo','nada','es'}
 
+    # Truncamos las palabras a un largo máximo
     lista_de_palabras = [palabra[0:MAX_WORD_LENGTH] if len(palabra) > MAX_WORD_LENGTH else palabra for palabra in lista_de_palabras]
     lista_de_palabras = [palabra for palabra in lista_de_palabras if palabra not in stop_words]
     

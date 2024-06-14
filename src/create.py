@@ -22,6 +22,7 @@ def create(directorio_pdfs: str):
         print(f"La carpeta {directorio_pdfs} no contiene archivos pdf")
         return
 
+    # Crear base de datos y guardarla en disco
     db = Database()
     db.add_documents(archivos_pdf)
     db.save()

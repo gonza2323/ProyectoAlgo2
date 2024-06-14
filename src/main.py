@@ -13,6 +13,7 @@ def main(arguments = argv[1:]):
     comando = arguments[0]
 
     if comando == "-create":
+        # Verificar número de argumentos
         if len(arguments) == 2:
             create(arguments[1])
         else:
@@ -20,12 +21,13 @@ def main(arguments = argv[1:]):
             return
 
     elif comando == "-search":
-        # Verificar que haya un solo argumento para '-search'
+        # Verificar número de argumentos
         if len(arguments) == 2:
             search(arguments[1])
         else:
             print("Error. Número incorrecto de argumentos. Use '-search <text>'")
             return
+        
     else:
         print(f"Error. '{comando}' no es un comando válido. Use '-create' o '-search'")
         return
